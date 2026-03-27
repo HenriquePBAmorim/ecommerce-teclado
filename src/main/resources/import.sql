@@ -1,0 +1,29 @@
+-- ESTADOS
+INSERT INTO estado (sigla, nome, codigo_regiao) VALUES ('TO', 'Tocantins', 3);
+INSERT INTO estado (sigla, nome, codigo_regiao) VALUES ('GO', 'Goiás', 1);
+INSERT INTO estado (sigla, nome, codigo_regiao) VALUES ('SP', 'São Paulo', 4);
+INSERT INTO estado (sigla, nome, codigo_regiao) VALUES ('RJ', 'Rio de Janeiro', 4);
+
+-- MUNICIPIOS
+INSERT INTO municipio (nome, id_estado) VALUES ('Palmas', 1);
+INSERT INTO municipio (nome, id_estado) VALUES ('Porto Nacional', 1);
+INSERT INTO municipio (nome, id_estado) VALUES ('Goiânia', 2);
+INSERT INTO municipio (nome, id_estado) VALUES ('Aparecida de Goiânia', 2);
+INSERT INTO municipio (nome, id_estado) VALUES ('São Paulo', 3);
+INSERT INTO municipio (nome, id_estado) VALUES ('Guarulhos', 3);
+INSERT INTO municipio (nome, id_estado) VALUES ('Rio de Janeiro', 4);
+INSERT INTO municipio (nome, id_estado) VALUES ('Niterói', 4);
+
+-- MARCAS
+INSERT INTO marca (nome, descricao) VALUES ('Redragon', 'Marca chinesa de periféricos gamer');
+INSERT INTO marca (nome, descricao) VALUES ('HyperX', 'Marca americana de periféricos gamer');
+INSERT INTO marca (nome, descricao) VALUES ('Logitech', 'Marca suíça de periféricos gamer');
+INSERT INTO marca (nome, descricao) VALUES ('Corsair', 'Marca americana de periféricos gamer');
+INSERT INTO marca (nome, descricao) VALUES ('Anne', 'Marca chinesa de periféricos gamer');
+
+-- TECLADOS
+INSERT INTO teclado (nome, id_tipo_switch, id_formato, id_marca, preco) VALUES ('Redragon Kumara K552', 2, 2, 1, 250.00);
+INSERT INTO teclado (nome, id_tipo_switch, id_formato, id_marca, preco) VALUES ('HyperX Alloy Origins', 2, 2, 2, 450.00);
+INSERT INTO teclado (nome, id_tipo_switch, id_formato, id_marca, preco) VALUES ('Logitech G Pro X', 3, 2, 3, 600.00);
+INSERT INTO teclado (nome, id_tipo_switch, id_formato, id_marca, preco) VALUES ('Corsair K70 RGB', 1, 3, 4, 700.00);
+INSERT INTO teclado (nome, id_tipo_switch, id_formato, id_marca, preco) VALUES ('Anne Pro 2', 1, 1, 5, 350.00);
