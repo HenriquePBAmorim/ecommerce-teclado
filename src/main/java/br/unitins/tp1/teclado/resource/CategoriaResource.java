@@ -1,11 +1,11 @@
 package br.unitins.tp1.teclado.resource;
 
 import java.util.List;
-import br.unitins.tp1.teclado.dto.TecladoRequestDTO;
-import br.unitins.tp1.teclado.dto.TecladoResponseDTO;
-import br.unitins.tp1.teclado.mapper.TecladoMapper;
-import br.unitins.tp1.teclado.model.Teclado;
-import br.unitins.tp1.teclado.service.TecladoService;
+import br.unitins.tp1.teclado.dto.CategoriaRequestDTO;
+import br.unitins.tp1.teclado.dto.CategoriaResponseDTO;
+import br.unitins.tp1.teclado.mapper.CategoriaMapper;
+import br.unitins.tp1.teclado.model.Categoria;
+import br.unitins.tp1.teclado.service.CategoriaService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -20,29 +20,24 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/teclados")
+@Path("/categorias")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class TecladoResource {
+public class CategoriaResource {
 
     @Inject
-    TecladoService service;
+    CategoriaService service;
 
     @GET
     public Response buscarTodos() {
-        List<TecladoResponseDTO> lista = service.findAll()
-                .stream()
-                .map(TecladoMapper::toResponseDTO)
-                .toList();
+        List<CategoriaResponseDTO> lista = service.findAll().stream().map(CategoriaMapper::toResponseDTO).toList();
         return Response.ok(lista).build();
     }
 
     @GET
     @Path("/find/{nome}")
     public Response buscarPeloNome(@PathParam("nome") String nome) {
-        List<TecladoResponseDTO> lista = service.findByNome(nome)
-                .stream()
-                .map(TecladoMapper::toResponseDTO)
+        List<CategoriaResponseDTO> lista = service.findByNome(nome).stream().map(CategoriaMapper::toResponseDTO)
                 .toList();
         return Response.ok(lista).build();
     }
@@ -50,24 +45,24 @@ public class TecladoResource {
     @GET
     @Path("/{id}")
     public Response buscarPeloId(@PathParam("id") Long id) {
-        Teclado teclado = service.findById(id);
-        if (teclado == null)
+        Categoria categoria = service.findById(id);
+        if (categoria == null)
             return Response.status(Status.NOT_FOUND).build();
-        return Response.ok(TecladoMapper.toResponseDTO(teclado)).build();
+        return Response.ok(CategoriaMapper.toResponseDTO(categoria)).build();
     }
 
     @POST
-    public Response incluir(@Valid TecladoRequestDTO dto) {
-        Teclado teclado = service.create(TecladoMapper.toEntity(dto));
-        return Response.status(Status.CREATED).entity(TecladoMapper.toResponseDTO(teclado)).build();
+    public Response incluir(@Valid CategoriaRequestDTO dto) {
+        Categoria categoria = service.create(CategoriaMapper.toEntity(dto));
+        return Response.status(Status.CREATED).entity(CategoriaMapper.toResponseDTO(categoria)).build();
     }
 
     @PUT
     @Path("/{id}")
-    public Response alterar(@PathParam("id") Long id, @Valid TecladoRequestDTO dto) {
+    public Response alterar(@PathParam("id") Long id, @Valid CategoriaRequestDTO dto) {
         if (service.findById(id) == null)
             return Response.status(Status.NOT_FOUND).build();
-        service.update(id, TecladoMapper.toEntity(dto));
+        service.update(id, CategoriaMapper.toEntity(dto));
         return Response.ok().build();
     }
 

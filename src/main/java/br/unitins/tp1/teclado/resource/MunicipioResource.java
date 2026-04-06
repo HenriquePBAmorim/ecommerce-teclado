@@ -7,6 +7,7 @@ import br.unitins.tp1.teclado.mapper.MunicipioMapper;
 import br.unitins.tp1.teclado.model.Municipio;
 import br.unitins.tp1.teclado.service.MunicipioService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -16,6 +17,8 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 @Path("/municipios")
 @Produces(MediaType.APPLICATION_JSON)
@@ -26,43 +29,64 @@ public class MunicipioResource {
     MunicipioService service;
 
     @GET
-    public List<MunicipioResponseDTO> buscarTodos() {
-        return service.findAll().stream().map(MunicipioMapper::toResponseDTO).toList();
+    public Response buscarTodos() {
+        List<MunicipioResponseDTO> lista = service.findAll()
+                .stream()
+                .map(MunicipioMapper::toResponseDTO)
+                .toList();
+        return Response.ok(lista).build();
     }
 
     @GET
     @Path("/find/{nome}")
-    public List<MunicipioResponseDTO> buscarPeloNome(@PathParam("nome") String nome) {
-        return service.findByNome(nome).stream().map(MunicipioMapper::toResponseDTO).toList();
+    public Response buscarPeloNome(@PathParam("nome") String nome) {
+        List<MunicipioResponseDTO> lista = service.findByNome(nome)
+                .stream()
+                .map(MunicipioMapper::toResponseDTO)
+                .toList();
+        return Response.ok(lista).build();
     }
 
     @GET
     @Path("/find/estado/{idEstado}")
-    public List<MunicipioResponseDTO> buscarPorEstado(@PathParam("idEstado") Long idEstado) {
-        return service.findByEstado(idEstado).stream().map(MunicipioMapper::toResponseDTO).toList();
+    public Response buscarPorEstado(@PathParam("idEstado") Long idEstado) {
+        List<MunicipioResponseDTO> lista = service.findByEstado(idEstado)
+                .stream()
+                .map(MunicipioMapper::toResponseDTO)
+                .toList();
+        return Response.ok(lista).build();
     }
 
     @GET
     @Path("/{id}")
-    public MunicipioResponseDTO buscarPeloId(@PathParam("id") Long id) {
-        return MunicipioMapper.toResponseDTO(service.findById(id));
+    public Response buscarPeloId(@PathParam("id") Long id) {
+        Municipio municipio = service.findById(id);
+        if (municipio == null)
+            return Response.status(Status.NOT_FOUND).build();
+        return Response.ok(MunicipioMapper.toResponseDTO(municipio)).build();
     }
 
     @POST
-    public MunicipioResponseDTO incluir(MunicipioRequestDTO dto) {
+    public Response incluir(@Valid MunicipioRequestDTO dto) {
         Municipio municipio = service.create(MunicipioMapper.toEntity(dto));
-        return MunicipioMapper.toResponseDTO(municipio);
+        return Response.status(Status.CREATED).entity(MunicipioMapper.toResponseDTO(municipio)).build();
     }
 
     @PUT
     @Path("/{id}")
-    public void alterar(@PathParam("id") Long id, MunicipioRequestDTO dto) {
+    public Response alterar(@PathParam("id") Long id, @Valid MunicipioRequestDTO dto) {
+        if (service.findById(id) == null)
+            return Response.status(Status.NOT_FOUND).build();
         service.update(id, MunicipioMapper.toEntity(dto));
+        return Response.ok().build();
     }
 
     @DELETE
     @Path("/{id}")
-    public void deletar(@PathParam("id") Long id) {
+    public Response deletar(@PathParam("id") Long id) {
+        if (service.findById(id) == null)
+            return Response.status(Status.NOT_FOUND).build();
         service.delete(id);
+        return Response.noContent().build();
     }
 }
