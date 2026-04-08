@@ -21,6 +21,17 @@ INSERT INTO marca (nome, descricao) VALUES ('Logitech', 'Marca suíça de perif�
 INSERT INTO marca (nome, descricao) VALUES ('Corsair', 'Marca americana de periféricos gamer');
 INSERT INTO marca (nome, descricao) VALUES ('Anne', 'Marca chinesa de periféricos gamer');
 
+-- CATEGORIAS
+INSERT INTO categoria (nome, descricao) VALUES ('Gamer', 'Equipamentos focados em baixo tempo de resposta e performance');
+INSERT INTO categoria (nome, descricao) VALUES ('Produtividade', 'Teclados focados em ergonomia e digitação silenciosa');
+INSERT INTO categoria (nome, descricao) VALUES ('Custom', 'Teclados premium voltados para entusiastas da customização');
+
+-- SWITCHES
+-- (id_tipo_switch: 1=Blue/Clicky, 2=Red/Linear, 3=Brown/Tactile)
+INSERT INTO switch (nome, fabricante, id_tipo_switch, forca_atuacao) VALUES ('Outemu Blue', 'Outemu', 1, 60.0);
+INSERT INTO switch (nome, fabricante, id_tipo_switch, forca_atuacao) VALUES ('Cherry MX Red', 'Cherry GmbH', 2, 45.0);
+INSERT INTO switch (nome, fabricante, id_tipo_switch, forca_atuacao) VALUES ('Gateron Brown', 'Gateron', 3, 55.0);
+
 -- TECLADOS
 INSERT INTO teclado (nome, id_tipo_switch, id_formato, id_marca, preco) VALUES ('Redragon Kumara K552', 2, 2, 1, 250.00);
 INSERT INTO teclado (nome, id_tipo_switch, id_formato, id_marca, preco) VALUES ('HyperX Alloy Origins', 2, 2, 2, 450.00);
