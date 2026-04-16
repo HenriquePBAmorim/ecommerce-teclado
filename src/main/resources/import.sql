@@ -1,46 +1,32 @@
--- ESTADOS
-INSERT INTO estado (sigla, nome, codigo_regiao) VALUES ('TO', 'Tocantins', 3);
-INSERT INTO estado (sigla, nome, codigo_regiao) VALUES ('GO', 'Goiás', 1);
-INSERT INTO estado (sigla, nome, codigo_regiao) VALUES ('SP', 'São Paulo', 4);
-INSERT INTO estado (sigla, nome, codigo_regiao) VALUES ('RJ', 'Rio de Janeiro', 4);
+-- 1. ESTADOS E MUNICÍPIOS
+INSERT INTO estado (id, sigla, nome, codigo_regiao) VALUES (1, 'TO', 'Tocantins', 3);
+INSERT INTO estado (id, sigla, nome, codigo_regiao) VALUES (2, 'GO', 'Goiás', 1);
 
--- MUNICIPIOS
-INSERT INTO municipio (nome, id_estado) VALUES ('Palmas', 1);
-INSERT INTO municipio (nome, id_estado) VALUES ('Porto Nacional', 1);
-INSERT INTO municipio (nome, id_estado) VALUES ('Goiânia', 2);
-INSERT INTO municipio (nome, id_estado) VALUES ('Aparecida de Goiânia', 2);
-INSERT INTO municipio (nome, id_estado) VALUES ('São Paulo', 3);
-INSERT INTO municipio (nome, id_estado) VALUES ('Guarulhos', 3);
-INSERT INTO municipio (nome, id_estado) VALUES ('Rio de Janeiro', 4);
-INSERT INTO municipio (nome, id_estado) VALUES ('Niterói', 4);
+INSERT INTO municipio (id, nome, id_estado) VALUES (1, 'Palmas', 1);
+INSERT INTO municipio (id, nome, id_estado) VALUES (2, 'Porto Nacional', 1);
 
--- MARCAS
-INSERT INTO marca (nome, descricao) VALUES ('Redragon', 'Marca chinesa de periféricos gamer');
-INSERT INTO marca (nome, descricao) VALUES ('HyperX', 'Marca americana de periféricos gamer');
-INSERT INTO marca (nome, descricao) VALUES ('Logitech', 'Marca suíça de periféricos gamer');
-INSERT INTO marca (nome, descricao) VALUES ('Corsair', 'Marca americana de periféricos gamer');
-INSERT INTO marca (nome, descricao) VALUES ('Anne', 'Marca chinesa de periféricos gamer');
+-- 2. MARCAS E CATEGORIAS
+INSERT INTO marca (id, nome, descricao) VALUES (1, 'Redragon', 'Marca chinesa gamer');
+INSERT INTO marca (id, nome, descricao) VALUES (2, 'HyperX', 'Marca americana gamer');
 
--- CATEGORIAS
-INSERT INTO categoria (nome, descricao) VALUES ('Gamer', 'Equipamentos focados em baixo tempo de resposta e performance');
-INSERT INTO categoria (nome, descricao) VALUES ('Produtividade', 'Teclados focados em ergonomia e digitação silenciosa');
-INSERT INTO categoria (nome, descricao) VALUES ('Custom', 'Teclados premium voltados para entusiastas da customização');
+INSERT INTO categoria (id, nome, descricao) VALUES (1, 'Gamer', 'Foco em performance');
+INSERT INTO categoria (id, nome, descricao) VALUES (2, 'Sem Fio', 'Conexão via Bluetooth');
 
--- SWITCHES
--- (id_tipo_switch: 1=Blue/Clicky, 2=Red/Linear, 3=Brown/Tactile)
-INSERT INTO switch (nome, fabricante, id_tipo_switch, forca_atuacao) VALUES ('Outemu Blue', 'Outemu', 1, 60.0);
-INSERT INTO switch (nome, fabricante, id_tipo_switch, forca_atuacao) VALUES ('Cherry MX Red', 'Cherry GmbH', 2, 45.0);
-INSERT INTO switch (nome, fabricante, id_tipo_switch, forca_atuacao) VALUES ('Gateron Brown', 'Gateron', 3, 55.0);
+-- 3. SWITCHES E KEYCAPS (Corrigido para forcaAtuacao sem underline)
+INSERT INTO switch (id, nome, fabricante, id_tipo_switch, forcaAtuacao) VALUES (1, 'Outemu Blue', 'Outemu', 1, 60.0);
+INSERT INTO switch (id, nome, fabricante, id_tipo_switch, forcaAtuacao) VALUES (2, 'Cherry MX Red', 'Cherry GmbH', 2, 45.0);
 
--- TECLADOS
-INSERT INTO teclado (nome, id_tipo_switch, id_formato, id_marca, preco) VALUES ('Redragon Kumara K552', 2, 2, 1, 250.00);
-INSERT INTO teclado (nome, id_tipo_switch, id_formato, id_marca, preco) VALUES ('HyperX Alloy Origins', 2, 2, 2, 450.00);
-INSERT INTO teclado (nome, id_tipo_switch, id_formato, id_marca, preco) VALUES ('Logitech G Pro X', 3, 2, 3, 600.00);
-INSERT INTO teclado (nome, id_tipo_switch, id_formato, id_marca, preco) VALUES ('Corsair K70 RGB', 1, 3, 4, 700.00);
-INSERT INTO teclado (nome, id_tipo_switch, id_formato, id_marca, preco) VALUES ('Anne Pro 2', 1, 1, 5, 350.00);
+INSERT INTO keycap (id, nome, material, id_perfil, cor) VALUES (1, 'HyperX Pudding', 'PBT', 2, 'Preto');
 
--- KEYCAPS
--- (id_perfil: 1=Cherry, 2=OEM, 3=SA, 4=XDA)
-INSERT INTO keycap (nome, material, id_perfil, cor) VALUES ('HyperX Pudding', 'PBT', 2, 'Preto/Translúcido');
-INSERT INTO keycap (nome, material, id_perfil, cor) VALUES ('Akko Neon', 'PBT', 1, 'Rosa e Azul');
-INSERT INTO keycap (nome, material, id_perfil, cor) VALUES ('Corsair Pro', 'ABS', 2, 'Preto');
+-- 4. ESTOQUE (Composição: Cria o estoque antes)
+INSERT INTO estoque (id, quantidade, data_atualizacao) VALUES (1, 15, CURRENT_TIMESTAMP);
+INSERT INTO estoque (id, quantidade, data_atualizacao) VALUES (2, 8, CURRENT_TIMESTAMP);
+
+-- 5. PRODUTOS E TECLADOS (Herança: Inserindo no Produto e depois no Teclado)
+-- Teclado 1: Redragon
+INSERT INTO produto (id, nome, preco) VALUES (1, 'Redragon Kumara', 250.00);
+INSERT INTO teclado (id, modelo, idioma, comFio, iluminacaoRgb, id_marca, id_estoque) VALUES (1, 'K552', 'PT-BR', true, true, 1, 1);
+
+-- Teclado 2: HyperX
+INSERT INTO produto (id, nome, preco) VALUES (2, 'HyperX Alloy Origins', 450.00);
+INSERT INTO teclado (id, modelo, idioma, comFio, iluminacaoRgb, id_marca, id_estoque) VALUES (2, 'Alloy Core', 'US', true, true, 2, 2);

@@ -1,0 +1,95 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam shadowing false
+
+' ==========================================
+' HERANÇA E COMPOSIÇÃO (NÚCLEO DO PROJETO)
+' ==========================================
+abstract class Produto {
+    - id: Long
+    - nome: String
+    - preco: Double
+    - dataCadastro: LocalDate
+}
+
+class Teclado {
+    - modelo: String
+    - idioma: String
+    - comFio: Boolean
+    - iluminacaoRgb: Boolean
+}
+
+class Estoque {
+    - id: Long
+    - quantidade: Integer
+    - dataAtualizacao: LocalDate
+}
+
+' ==========================================
+' CATÁLOGO BASE
+' ==========================================
+class Categoria {
+    - id: Long
+    - nome: String
+    - descricao: String
+}
+
+class Marca {
+    - id: Long
+    - nome: String
+    - descricao: String
+}
+
+class Switch {
+    - id: Long
+    - nome: String
+    - fabricante: String
+    - forcaAtuacao: Double
+}
+
+class Keycap {
+    - id: Long
+    - nome: String
+    - material: String
+    - cor: String
+}
+
+' ==========================================
+' ENUMS
+' ==========================================
+enum TipoSwitch {
+    ID: Integer
+    LABEL: String
+}
+
+enum PerfilKeycap {
+    ID: Integer
+    LABEL: String
+}
+
+' ==========================================
+' RELACIONAMENTOS OBRIGATÓRIOS DO PROFESSOR
+' ==========================================
+
+' 1. Herança (Seta com ponta vazada)
+Produto <|-- Teclado
+
+' 2. Composição (Diamante preenchido) | Cardinalidade 1:1
+Teclado "1" *-- "1" Estoque : controla >
+
+' 3. Agregação (Diamante vazio) | Cardinalidade N:1
+Teclado "*" o-- "1" Switch : usa >
+Teclado "*" o-- "1" Keycap : usa >
+
+' 4. Associação Simples | Cardinalidade N:1
+Teclado "*" --> "1" Marca : possui >
+
+' 5. Associação Muitos-para-Muitos | Cardinalidade N:N
+Teclado "*" -- "*" Categoria : classificado como >
+
+' 6. Associações dos Enums | Cardinalidade N:1
+Switch "*" --> "1" TipoSwitch : tipo >
+Keycap "*" --> "1" PerfilKeycap : perfil >
+
+@enduml

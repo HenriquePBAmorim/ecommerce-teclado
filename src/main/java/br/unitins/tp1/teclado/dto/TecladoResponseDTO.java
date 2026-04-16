@@ -1,13 +1,15 @@
 package br.unitins.tp1.teclado.dto;
 
-import br.unitins.tp1.teclado.model.Formato;
-import br.unitins.tp1.teclado.model.TipoSwitch;
+import java.util.List;
 
 public record TecladoResponseDTO(
-        Long id,
-        String nome,
-        TipoSwitch tipoSwitch,
-        Formato formato,
-        MarcaResponseDTO marca,
-        Double preco) {
+                Long id,
+                String nome,
+                String modelo,
+                Double preco,
+                Integer quantidadeEstoque,
+                String nomeMarca,
+                String nomeSwitch,
+                String nomeKeycap,
+                List<String> categorias) {
 }
