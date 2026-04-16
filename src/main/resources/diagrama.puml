@@ -3,9 +3,7 @@ skinparam classAttributeIconSize 0
 skinparam monochrome false
 skinparam shadowing false
 
-' ==========================================
-' HERANÇA E COMPOSIÇÃO (NÚCLEO DO PROJETO)
-' ==========================================
+' HERANÇA E COMPOSIÇÃO
 abstract class Produto {
     - id: Long
     - nome: String
@@ -26,9 +24,8 @@ class Estoque {
     - dataAtualizacao: LocalDate
 }
 
-' ==========================================
 ' CATÁLOGO BASE
-' ==========================================
+
 class Categoria {
     - id: Long
     - nome: String
@@ -55,9 +52,8 @@ class Keycap {
     - cor: String
 }
 
-' ==========================================
 ' ENUMS
-' ==========================================
+
 enum TipoSwitch {
     ID: Integer
     LABEL: String
@@ -67,10 +63,6 @@ enum PerfilKeycap {
     ID: Integer
     LABEL: String
 }
-
-' ==========================================
-' RELACIONAMENTOS OBRIGATÓRIOS DO PROFESSOR
-' ==========================================
 
 ' 1. Herança (Seta com ponta vazada)
 Produto <|-- Teclado
@@ -91,5 +83,5 @@ Teclado "*" -- "*" Categoria : classificado como >
 ' 6. Associações dos Enums | Cardinalidade N:1
 Switch "*" --> "1" TipoSwitch : tipo >
 Keycap "*" --> "1" PerfilKeycap : perfil >
-
+' 
 @enduml
