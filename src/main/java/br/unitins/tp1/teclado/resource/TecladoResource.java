@@ -6,6 +6,7 @@ import br.unitins.tp1.teclado.dto.TecladoResponseDTO;
 import br.unitins.tp1.teclado.mapper.TecladoMapper;
 import br.unitins.tp1.teclado.model.Teclado;
 import br.unitins.tp1.teclado.service.TecladoService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -29,6 +30,7 @@ public class TecladoResource {
     TecladoService service;
 
     @GET
+    @RolesAllowed({ "ADMIN", "USER" }) // Ambos podem listar
     public Response buscarTodos() {
         List<TecladoResponseDTO> lista = service.findAll()
                 .stream()
@@ -39,6 +41,7 @@ public class TecladoResource {
 
     @GET
     @Path("/find/{nome}")
+    @RolesAllowed({ "ADMIN", "USER" }) // Ambos podem listar
     public Response buscarPeloNome(@PathParam("nome") String nome) {
         List<TecladoResponseDTO> lista = service.findByNome(nome)
                 .stream()
@@ -49,6 +52,7 @@ public class TecladoResource {
 
     @GET
     @Path("/{id}")
+    @RolesAllowed({ "ADMIN", "USER" }) // Ambos podem ver
     public Response buscarPeloId(@PathParam("id") Long id) {
         Teclado teclado = service.findById(id);
         if (teclado == null)
@@ -57,6 +61,7 @@ public class TecladoResource {
     }
 
     @POST
+    @RolesAllowed({ "ADMIN" }) // APENAS ADMIN PODE CADASTRAR
     public Response incluir(@Valid TecladoRequestDTO dto) {
         Teclado teclado = service.create(TecladoMapper.toEntity(dto));
         return Response.status(Status.CREATED).entity(TecladoMapper.toResponseDTO(teclado)).build();
@@ -64,6 +69,7 @@ public class TecladoResource {
 
     @PUT
     @Path("/{id}")
+    @RolesAllowed({ "ADMIN" }) // APENAS ADMIN PODE ALTERAR
     public Response alterar(@PathParam("id") Long id, @Valid TecladoRequestDTO dto) {
         if (service.findById(id) == null)
             return Response.status(Status.NOT_FOUND).build();
@@ -73,6 +79,7 @@ public class TecladoResource {
 
     @DELETE
     @Path("/{id}")
+    @RolesAllowed({ "ADMIN" }) // APENAS ADMIN PODE DELETAR
     public Response deletar(@PathParam("id") Long id) {
         if (service.findById(id) == null)
             return Response.status(Status.NOT_FOUND).build();
