@@ -1,9 +1,13 @@
 package br.unitins.tp1.teclado.model;
 
+import java.util.List;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Usuario extends DefaultEntity {
@@ -20,7 +24,17 @@ public class Usuario extends DefaultEntity {
     @Column(nullable = false)
     private Perfil perfil;
 
-    // Getters e Setters
+    // Novos campos adicionados para o E-commerce:
+    private String cpf;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_usuario")
+    private List<Telefone> telefones;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Endereco> enderecos;
+
+    // Getters e Setters originais
     public String getNome() {
         return nome;
     }
@@ -52,4 +66,29 @@ public class Usuario extends DefaultEntity {
     public void setPerfil(Perfil perfil) {
         this.perfil = perfil;
     }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public List<Telefone> getTelefones() {
+        return telefones;
+    }
+
+    public void setTelefones(List<Telefone> telefones) {
+        this.telefones = telefones;
+    }
+
+    public List<Endereco> getEnderecos() {
+        return enderecos;
+    }
+
+    public void setEnderecos(List<Endereco> enderecos) {
+        this.enderecos = enderecos;
+    }
+
 }
