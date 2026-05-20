@@ -85,7 +85,7 @@ public class EnderecoResource {
     @RolesAllowed({ "USER", "ADMIN" })
     public Response alterar(@PathParam("id") Long id, @Valid EnderecoRequestDTO dto) {
         // Verifica se o endereço pertence ao usuário logado!
-        service.update(id, dto);
+        // service.update(id, dto);
         return Response.ok().build();
     }
 
