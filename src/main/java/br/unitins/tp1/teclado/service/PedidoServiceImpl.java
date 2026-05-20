@@ -37,14 +37,16 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     @Transactional
     public Pedido create(Long idUsuario, PedidoRequestDTO dto) {
+        // 1. Validação do Usuário
         Usuario usuario = usuarioRepository.findById(idUsuario);
         if (usuario == null) {
-            throw new RuntimeException("Usuário não encontrado.");
+            throw new IllegalArgumentException("Usuário não encontrado.");
         }
 
+        // 2. Validação do Endereço de Entrega
         Endereco endereco = enderecoRepository.findById(dto.idEnderecoEntrega());
         if (endereco == null) {
-            throw new RuntimeException("Endereço de entrega não encontrado.");
+            throw new IllegalArgumentException("Endereço de entrega não encontrado.");
         }
 
         Pedido pedido = new Pedido();
@@ -55,31 +57,31 @@ public class PedidoServiceImpl implements PedidoService {
         List<ItemPedido> itensPedido = new ArrayList<>();
         Double valorTotalCalculado = 0.0;
 
-        // Processar cada item enviado no carrinho de compras
+        // 3. Processamento dos Itens do Carrinho
         for (ItemPedidoRequestDTO itemDto : dto.itens()) {
             Teclado teclado = tecladoRepository.findById(itemDto.idTeclado());
             if (teclado == null) {
-                throw new RuntimeException("Teclado com ID " + itemDto.idTeclado() + " não existe.");
+                throw new IllegalArgumentException("Teclado com ID " + itemDto.idTeclado() + " não existe.");
             }
 
-            // Regra Crítica: Validação e baixa do Estoque
+            // Validação e Baixa do Estoque
             if (teclado.getEstoque() == null || teclado.getEstoque().getQuantidade() < itemDto.quantidade()) {
-                throw new RuntimeException("Estoque insuficiente para o modelo: " + teclado.getNome());
+                throw new IllegalArgumentException("Estoque insuficiente para o modelo: " + teclado.getNome());
             }
 
-            // Subtrai do estoque atual do teclado
+            // Atualiza a quantidade disponível no estoque do teclado
             int novoEstoque = teclado.getEstoque().getQuantidade() - itemDto.quantidade();
             teclado.getEstoque().setQuantidade(novoEstoque);
 
-            // Monta a entidade do item
+            // Instancia o item com o preço histórico do momento da compra
             ItemPedido item = new ItemPedido();
             item.setTeclado(teclado);
             item.setQuantidade(itemDto.quantidade());
-            item.setPreco(teclado.getPreco()); // Congela o preço histórico da compra
+            item.setPreco(teclado.getPreco());
 
             itensPedido.add(item);
 
-            // Calcula o subtotal do item e joga no acumulador do pedido
+            // Acumula o valor total
             valorTotalCalculado += item.getPreco() * item.getQuantidade();
         }
 

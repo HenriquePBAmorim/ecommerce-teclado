@@ -1,22 +1,18 @@
 package br.unitins.tp1.teclado.service;
 
 import java.util.List;
-import br.unitins.tp1.teclado.model.Estoque;
 import br.unitins.tp1.teclado.model.Teclado;
-import br.unitins.tp1.teclado.repository.EstoqueRepository;
 import br.unitins.tp1.teclado.repository.TecladoRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
 public class TecladoServiceImpl implements TecladoService {
 
     @Inject
     TecladoRepository repository;
-
-    @Inject
-    EstoqueRepository estoqueRepository;
 
     @Override
     public List<Teclado> findAll() {
@@ -25,7 +21,11 @@ public class TecladoServiceImpl implements TecladoService {
 
     @Override
     public Teclado findById(Long id) {
-        return repository.findById(id);
+        Teclado teclado = repository.findById(id);
+        if (teclado == null) {
+            throw new NotFoundException("Teclado não encontrado no banco de dados.");
+        }
+        return teclado;
     }
 
     @Override
@@ -36,11 +36,6 @@ public class TecladoServiceImpl implements TecladoService {
     @Override
     @Transactional
     public Teclado create(Teclado teclado) {
-        Estoque estoque = teclado.getEstoque();
-        if (estoque != null && estoque.getId() == null) {
-            estoqueRepository.persist(estoque);
-        }
-
         repository.persist(teclado);
         return teclado;
     }
@@ -50,41 +45,29 @@ public class TecladoServiceImpl implements TecladoService {
     public void update(Long id, Teclado teclado) {
         Teclado entity = repository.findById(id);
         if (entity == null) {
-            throw new RuntimeException("Teclado não encontrado.");
+            throw new NotFoundException("Não é possível alterar. Teclado não encontrado.");
         }
 
         entity.setNome(teclado.getNome());
         entity.setPreco(teclado.getPreco());
-
         entity.setModelo(teclado.getModelo());
         entity.setIdioma(teclado.getIdioma());
         entity.setComFio(teclado.getComFio());
         entity.setIluminacaoRgb(teclado.getIluminacaoRgb());
-
+        entity.setEstoque(teclado.getEstoque());
         entity.setMarca(teclado.getMarca());
         entity.setSwitchTeclado(teclado.getSwitchTeclado());
         entity.setKeycap(teclado.getKeycap());
         entity.setCategorias(teclado.getCategorias());
-
-        Estoque estoqueExistente = entity.getEstoque();
-        if (estoqueExistente == null) {
-            estoqueExistente = new Estoque();
-            entity.setEstoque(estoqueExistente);
-        }
-
-        if (teclado.getEstoque() != null) {
-            estoqueExistente.setQuantidade(teclado.getEstoque().getQuantidade());
-            estoqueExistente.setDataAtualizacao(teclado.getEstoque().getDataAtualizacao());
-
-            if (estoqueExistente.getId() == null) {
-                estoqueRepository.persist(estoqueExistente);
-            }
-        }
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        repository.deleteById(id);
+        Teclado teclado = repository.findById(id);
+        if (teclado == null) {
+            throw new NotFoundException("Não é possível deletar. Teclado não encontrado.");
+        }
+        repository.delete(teclado);
     }
 }

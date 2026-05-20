@@ -1,0 +1,78 @@
+package br.unitins.tp1.teclado.service;
+
+import java.util.List;
+import br.unitins.tp1.teclado.dto.UsuarioRequestDTO;
+import br.unitins.tp1.teclado.model.Usuario;
+import br.unitins.tp1.teclado.repository.UsuarioRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
+
+@ApplicationScoped
+public class UsuarioServiceImpl implements UsuarioService {
+
+    @Inject
+    UsuarioRepository repository;
+
+    @Override
+    public List<Usuario> findAll() {
+        return repository.findAll().list();
+    }
+
+    @Override
+    public Usuario findById(Long id) {
+        Usuario usuario = repository.findById(id);
+        if (usuario == null) {
+            throw new NotFoundException("Usuário não encontrado no sistema.");
+        }
+        return usuario;
+    }
+
+    @Override
+    @Transactional
+    public Usuario create(UsuarioRequestDTO dto) {
+        // Regra de Negócio: Não permite logins idênticos no sistema
+        if (repository.findByLogin(dto.login()).isPresent()) {
+            throw new IllegalArgumentException("Este login já está em uso por outro usuário.");
+        }
+
+        Usuario usuario = new Usuario();
+        usuario.setNome(dto.nome());
+        usuario.setLogin(dto.login());
+        usuario.setSenhaHash(dto.senha()); // Se possuir um HashService para Bcrypt, aplique aqui
+
+        repository.persist(usuario);
+        return usuario;
+    }
+
+    @Override
+    @Transactional
+    public void update(Long id, UsuarioRequestDTO dto) {
+        Usuario usuario = repository.findById(id);
+        if (usuario == null) {
+            throw new NotFoundException("Não é possível alterar. Usuário não encontrado.");
+        }
+
+        // Validação: Impede que o usuário mude o login dele para um que já pertence a
+        // outra pessoa
+        var usuarioExistente = repository.findByLogin(dto.login());
+        if (usuarioExistente.isPresent() && !usuarioExistente.get().getId().equals(id)) {
+            throw new IllegalArgumentException("Este login já está em uso por outro usuário.");
+        }
+
+        usuario.setNome(dto.nome());
+        usuario.setLogin(dto.login());
+        usuario.setSenhaHash(dto.senha());
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        Usuario usuario = repository.findById(id);
+        if (usuario == null) {
+            throw new NotFoundException("Não é possível deletar. Usuário não encontrado.");
+        }
+        repository.delete(usuario);
+    }
+}
