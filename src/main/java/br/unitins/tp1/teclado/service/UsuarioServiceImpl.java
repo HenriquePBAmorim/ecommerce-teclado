@@ -2,6 +2,7 @@ package br.unitins.tp1.teclado.service;
 
 import java.util.List;
 import br.unitins.tp1.teclado.dto.UsuarioRequestDTO;
+import br.unitins.tp1.teclado.model.Perfil;
 import br.unitins.tp1.teclado.model.Usuario;
 import br.unitins.tp1.teclado.repository.UsuarioRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -40,7 +41,9 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = new Usuario();
         usuario.setNome(dto.nome());
         usuario.setLogin(dto.login());
-        usuario.setSenhaHash(dto.senha()); // Se possuir um HashService para Bcrypt, aplique aqui
+        usuario.setSenhaHash(dto.senha());
+
+        usuario.setPerfil(Perfil.USER);
 
         repository.persist(usuario);
         return usuario;

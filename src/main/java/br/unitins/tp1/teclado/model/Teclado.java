@@ -1,5 +1,6 @@
 package br.unitins.tp1.teclado.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -16,7 +17,7 @@ public class Teclado extends Produto {
     private Boolean comFio;
     private Boolean iluminacaoRgb;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_estoque", unique = true)
     private Estoque estoque;
 
