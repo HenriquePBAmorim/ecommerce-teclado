@@ -4,6 +4,7 @@ import java.util.List;
 import br.unitins.tp1.teclado.dto.UsuarioRequestDTO;
 import br.unitins.tp1.teclado.dto.UsuarioResponseDTO;
 import br.unitins.tp1.teclado.dto.CadastroClienteDTO;
+import br.unitins.tp1.teclado.dto.UsuarioUpdateDTO;
 import br.unitins.tp1.teclado.model.Usuario;
 import br.unitins.tp1.teclado.service.UsuarioService;
 import jakarta.annotation.security.PermitAll;
@@ -28,6 +29,9 @@ public class UsuarioResource {
 
     @Inject
     UsuarioService service;
+
+    @jakarta.inject.Inject
+    org.eclipse.microprofile.jwt.JsonWebToken jwt;
 
     @GET
     public Response buscarTodos() {
@@ -71,5 +75,13 @@ public class UsuarioResource {
     public Response cadastrarCliente(@Valid CadastroClienteDTO dto) {
         Usuario usuario = service.cadastrarCliente(dto);
         return Response.status(Status.CREATED).entity(UsuarioResponseDTO.toDTO(usuario)).build();
+    }
+
+    @jakarta.ws.rs.PUT
+    @jakarta.ws.rs.Path("/meu-perfil")
+    @jakarta.annotation.security.RolesAllowed({"USER", "ADMIN"})
+    public jakarta.ws.rs.core.Response atualizarPerfil(UsuarioUpdateDTO dto) {
+        String login = jwt.getName();
+        return jakarta.ws.rs.core.Response.ok(service.atualizarPerfil(login, dto)).build();
     }
 }

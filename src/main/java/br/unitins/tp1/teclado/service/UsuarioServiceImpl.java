@@ -2,6 +2,8 @@ package br.unitins.tp1.teclado.service;
 
 import java.util.List;
 import br.unitins.tp1.teclado.dto.UsuarioRequestDTO;
+import br.unitins.tp1.teclado.dto.UsuarioResponseDTO;
+import br.unitins.tp1.teclado.dto.UsuarioUpdateDTO;
 import br.unitins.tp1.teclado.dto.CadastroClienteDTO;
 import br.unitins.tp1.teclado.model.Perfil;
 import br.unitins.tp1.teclado.model.Usuario;
@@ -100,5 +102,17 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         repository.persist(usuario);
         return usuario;
+    }
+
+    @Override
+    @Transactional
+    public UsuarioResponseDTO atualizarPerfil(String login, UsuarioUpdateDTO dto) {
+        Usuario usuario = repository.findByLogin(login)
+                .orElseThrow(() -> new NotFoundException("Usuário logado não encontrado no sistema."));
+
+        usuario.setNome(dto.nome());
+        usuario.setCpf(dto.cpf());
+
+        return UsuarioResponseDTO.toDTO(usuario);
     }
 }

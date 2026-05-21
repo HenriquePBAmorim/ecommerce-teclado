@@ -2,6 +2,8 @@ package br.unitins.tp1.teclado.service;
 
 import java.util.List;
 import br.unitins.tp1.teclado.dto.UsuarioRequestDTO;
+import br.unitins.tp1.teclado.dto.UsuarioResponseDTO;
+import br.unitins.tp1.teclado.dto.UsuarioUpdateDTO;
 import br.unitins.tp1.teclado.dto.CadastroClienteDTO;
 import br.unitins.tp1.teclado.model.Usuario;
 
@@ -17,4 +19,6 @@ public interface UsuarioService {
     void delete(Long id);
 
     Usuario cadastrarCliente(CadastroClienteDTO dto);
+
+    UsuarioResponseDTO atualizarPerfil(String login, UsuarioUpdateDTO dto);
 }
