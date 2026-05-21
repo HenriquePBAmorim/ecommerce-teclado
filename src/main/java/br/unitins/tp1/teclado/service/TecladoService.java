@@ -18,4 +18,6 @@ public interface TecladoService {
     void delete(Long id);
 
     List<TecladoVitrineDTO> listarVitrine();
+
+    TecladoVitrineDTO buscarVitrinePorId(Long id);
 }

@@ -79,4 +79,13 @@ public class TecladoServiceImpl implements TecladoService {
                 .map(TecladoVitrineDTO::valueOf)
                 .toList();
     }
+
+    @Override
+    public TecladoVitrineDTO buscarVitrinePorId(Long id) {
+        Teclado teclado = repository.findById(id);
+        if (teclado == null) {
+            throw new NotFoundException("Produto não encontrado na vitrine.");
+        }
+        return TecladoVitrineDTO.valueOf(teclado);
+    }
 }
