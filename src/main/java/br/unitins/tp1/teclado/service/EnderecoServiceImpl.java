@@ -31,6 +31,11 @@ public class EnderecoServiceImpl implements EnderecoService {
     }
 
     @Override
+    public List<Endereco> findAll() {
+        return repository.findAll().list();
+    }
+
+    @Override
     public Endereco findById(Long id) {
         return repository.findById(id);
     }
@@ -80,6 +85,14 @@ public class EnderecoServiceImpl implements EnderecoService {
     @Override
     @Transactional
     public void delete(Long id) {
-        repository.deleteById(id);
+        Endereco endereco = repository.findById(id);
+        if (endereco != null) {
+            endereco.setAtivo(false);
+        }
+    }
+
+    @Override
+    public List<Endereco> findMeusEnderecosAtivos(String login) {
+        return repository.find("usuario.login = ?1 and ativo = true", login).list();
     }
 }

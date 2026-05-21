@@ -53,14 +53,22 @@ public class EnderecoResource {
                 .orElseThrow(() -> new NotFoundException("Usuário logado não encontrado no banco de dados."));
     }
 
-    @GET
-    @RolesAllowed({ "USER", "ADMIN" })
-    public Response buscarMeusEnderecos() {
-        // Descobre quem é o usuário pelo token
-        Usuario usuarioLogado = getUsuarioLogado();
+    @jakarta.ws.rs.GET
+    @jakarta.ws.rs.Path("/meus-enderecos")
+    @jakarta.annotation.security.RolesAllowed({"USER", "ADMIN"})
+    public jakarta.ws.rs.core.Response meusEnderecos() {
+        String login = jwt.getName();
+        List<EnderecoResponseDTO> lista = service.findMeusEnderecosAtivos(login)
+                .stream()
+                .map(EnderecoMapper::toResponseDTO)
+                .toList();
+        return jakarta.ws.rs.core.Response.ok(lista).build();
+    }
 
-        // Busca SÓ os endereços dele
-        List<EnderecoResponseDTO> lista = service.findByUsuario(usuarioLogado.getId())
+    @GET
+    @RolesAllowed({ "ADMIN" })
+    public Response buscarTodos() {
+        List<EnderecoResponseDTO> lista = service.findAll()
                 .stream()
                 .map(EnderecoMapper::toResponseDTO)
                 .toList();

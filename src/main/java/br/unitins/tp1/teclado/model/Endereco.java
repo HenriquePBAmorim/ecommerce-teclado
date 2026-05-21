@@ -21,7 +21,26 @@ public class Endereco extends DefaultEntity {
     @JoinColumn(name = "id_usuario")
     private Usuario usuario; // Define de quem é este endereço
 
+    private Boolean ativo = true;
+    private Boolean principal = false;
+
     // Getters e Setters
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public Boolean getPrincipal() {
+        return principal;
+    }
+
+    public void setPrincipal(Boolean principal) {
+        this.principal = principal;
+    }
 
     public String getLogradouro() {
         return logradouro;

@@ -7,6 +7,8 @@ import br.unitins.tp1.teclado.model.Endereco;
 public interface EnderecoService {
     List<Endereco> findByUsuario(Long idUsuario);
 
+    List<Endereco> findAll();
+
     Endereco findById(Long id);
 
     Endereco create(Long idUsuario, EnderecoRequestDTO dto);
@@ -14,4 +16,6 @@ public interface EnderecoService {
     void update(Long id, EnderecoRequestDTO dto);
 
     void delete(Long id);
+
+    List<Endereco> findMeusEnderecosAtivos(String login);
 }
