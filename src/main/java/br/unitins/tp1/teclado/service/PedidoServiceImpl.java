@@ -100,6 +100,11 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
+    public List<Pedido> findAll() {
+        return repository.findAll().list();
+    }
+
+    @Override
     public Pedido findById(Long id) {
         return repository.findById(id);
     }

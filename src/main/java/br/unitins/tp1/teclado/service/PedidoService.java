@@ -10,6 +10,8 @@ public interface PedidoService {
 
     List<Pedido> findByUsuario(Long idUsuario);
 
+    List<Pedido> findAll();
+
     Pedido findById(Long id);
 
     List<PedidoResponseDTO> meusPedidos(String login);

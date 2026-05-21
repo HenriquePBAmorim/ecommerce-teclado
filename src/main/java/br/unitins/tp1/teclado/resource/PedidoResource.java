@@ -63,11 +63,9 @@ public class PedidoResource {
     }
 
     @GET
-    @RolesAllowed({ "USER", "ADMIN" })
-    public Response buscarMeusPedidos() {
-        Usuario usuarioLogado = getUsuarioLogado();
-
-        List<PedidoResponseDTO> lista = service.findByUsuario(usuarioLogado.getId())
+    @RolesAllowed({ "ADMIN" })
+    public Response buscarTodos() {
+        List<PedidoResponseDTO> lista = service.findAll()
                 .stream()
                 .map(PedidoMapper::toResponseDTO)
                 .toList();
