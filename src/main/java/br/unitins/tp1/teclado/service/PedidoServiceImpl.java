@@ -6,6 +6,8 @@ import java.util.List;
 
 import br.unitins.tp1.teclado.dto.ItemPedidoRequestDTO;
 import br.unitins.tp1.teclado.dto.PedidoRequestDTO;
+import br.unitins.tp1.teclado.dto.PedidoResponseDTO;
+import br.unitins.tp1.teclado.mapper.PedidoMapper;
 import br.unitins.tp1.teclado.model.Endereco;
 import br.unitins.tp1.teclado.model.ItemPedido;
 import br.unitins.tp1.teclado.model.Pedido;
@@ -100,5 +102,13 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     public Pedido findById(Long id) {
         return repository.findById(id);
+    }
+
+    @Override
+    public List<PedidoResponseDTO> meusPedidos(String login) {
+        return repository.find("usuario.login", login)
+                .stream()
+                .map(PedidoMapper::toResponseDTO)
+                .toList();
     }
 }

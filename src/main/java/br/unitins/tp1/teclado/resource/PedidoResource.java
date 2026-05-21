@@ -86,4 +86,12 @@ public class PedidoResource {
         }
         return Response.ok(PedidoMapper.toResponseDTO(pedido)).build();
     }
+
+    @jakarta.ws.rs.GET
+    @jakarta.ws.rs.Path("/meus-pedidos")
+    @jakarta.annotation.security.RolesAllowed({"USER", "ADMIN"})
+    public jakarta.ws.rs.core.Response meusPedidos() {
+        String login = jwt.getName();
+        return jakarta.ws.rs.core.Response.ok(service.meusPedidos(login)).build();
+    }
 }

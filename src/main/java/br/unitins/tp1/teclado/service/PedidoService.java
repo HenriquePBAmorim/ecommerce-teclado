@@ -2,6 +2,7 @@ package br.unitins.tp1.teclado.service;
 
 import java.util.List;
 import br.unitins.tp1.teclado.dto.PedidoRequestDTO;
+import br.unitins.tp1.teclado.dto.PedidoResponseDTO;
 import br.unitins.tp1.teclado.model.Pedido;
 
 public interface PedidoService {
@@ -10,4 +11,6 @@ public interface PedidoService {
     List<Pedido> findByUsuario(Long idUsuario);
 
     Pedido findById(Long id);
+
+    List<PedidoResponseDTO> meusPedidos(String login);
 }
