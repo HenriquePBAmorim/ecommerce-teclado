@@ -3,6 +3,7 @@ package br.unitins.tp1.teclado.service;
 import java.util.List;
 import br.unitins.tp1.teclado.model.Teclado;
 import br.unitins.tp1.teclado.repository.TecladoRepository;
+import br.unitins.tp1.teclado.dto.TecladoVitrineDTO;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -69,5 +70,13 @@ public class TecladoServiceImpl implements TecladoService {
             throw new NotFoundException("Não é possível deletar. Teclado não encontrado.");
         }
         repository.delete(teclado);
+    }
+
+    @Override
+    public List<TecladoVitrineDTO> listarVitrine() {
+        return repository.find("estoque.quantidade > 0")
+                .stream()
+                .map(TecladoVitrineDTO::valueOf)
+                .toList();
     }
 }

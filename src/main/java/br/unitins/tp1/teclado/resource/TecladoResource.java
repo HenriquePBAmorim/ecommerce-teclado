@@ -7,6 +7,7 @@ import br.unitins.tp1.teclado.mapper.TecladoMapper;
 import br.unitins.tp1.teclado.model.Teclado;
 import br.unitins.tp1.teclado.service.TecladoService;
 import jakarta.annotation.security.RolesAllowed;
+import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -85,5 +86,12 @@ public class TecladoResource {
             return Response.status(Status.NOT_FOUND).build();
         service.delete(id);
         return Response.noContent().build();
+    }
+
+    @GET
+    @Path("/vitrine")
+    @PermitAll
+    public Response vitrine() {
+        return Response.ok(service.listarVitrine()).build();
     }
 }

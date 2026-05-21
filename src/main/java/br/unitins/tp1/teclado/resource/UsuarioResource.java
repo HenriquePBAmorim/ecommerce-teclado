@@ -3,8 +3,10 @@ package br.unitins.tp1.teclado.resource;
 import java.util.List;
 import br.unitins.tp1.teclado.dto.UsuarioRequestDTO;
 import br.unitins.tp1.teclado.dto.UsuarioResponseDTO;
+import br.unitins.tp1.teclado.dto.CadastroClienteDTO;
 import br.unitins.tp1.teclado.model.Usuario;
 import br.unitins.tp1.teclado.service.UsuarioService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -61,5 +63,13 @@ public class UsuarioResource {
     public Response deletar(@PathParam("id") Long id) {
         service.delete(id);
         return Response.noContent().build();
+    }
+
+    @POST
+    @Path("/cadastro")
+    @PermitAll
+    public Response cadastrarCliente(@Valid CadastroClienteDTO dto) {
+        Usuario usuario = service.cadastrarCliente(dto);
+        return Response.status(Status.CREATED).entity(UsuarioResponseDTO.toDTO(usuario)).build();
     }
 }

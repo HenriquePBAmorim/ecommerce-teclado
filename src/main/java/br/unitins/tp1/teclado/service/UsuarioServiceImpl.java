@@ -2,6 +2,7 @@ package br.unitins.tp1.teclado.service;
 
 import java.util.List;
 import br.unitins.tp1.teclado.dto.UsuarioRequestDTO;
+import br.unitins.tp1.teclado.dto.CadastroClienteDTO;
 import br.unitins.tp1.teclado.model.Perfil;
 import br.unitins.tp1.teclado.model.Usuario;
 import br.unitins.tp1.teclado.repository.UsuarioRepository;
@@ -15,6 +16,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Inject
     UsuarioRepository repository;
+
+    @Inject
+    HashService hashService;
 
     @Override
     public List<Usuario> findAll() {
@@ -77,5 +81,24 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new NotFoundException("Não é possível deletar. Usuário não encontrado.");
         }
         repository.delete(usuario);
+    }
+
+    @Override
+    @Transactional
+    public Usuario cadastrarCliente(CadastroClienteDTO dto) {
+        if (repository.findByLogin(dto.login()).isPresent()) {
+            throw new IllegalArgumentException("Este login já está em uso.");
+        }
+
+        Usuario usuario = new Usuario();
+        usuario.setNome(dto.nome());
+        usuario.setCpf(dto.cpf());
+        usuario.setLogin(dto.login());
+        usuario.setSenhaHash(hashService.bcrypt(dto.senha()));
+        
+        usuario.setPerfil(Perfil.USER);
+
+        repository.persist(usuario);
+        return usuario;
     }
 }
