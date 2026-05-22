@@ -4,6 +4,7 @@ import java.util.List;
 import br.unitins.tp1.teclado.dto.UsuarioRequestDTO;
 import br.unitins.tp1.teclado.dto.UsuarioResponseDTO;
 import br.unitins.tp1.teclado.dto.UsuarioUpdateDTO;
+import br.unitins.tp1.teclado.dto.UpdateSenhaDTO;
 import br.unitins.tp1.teclado.dto.CadastroClienteDTO;
 import br.unitins.tp1.teclado.model.Usuario;
 
@@ -21,4 +22,6 @@ public interface UsuarioService {
     Usuario cadastrarCliente(CadastroClienteDTO dto);
 
     UsuarioResponseDTO atualizarPerfil(String login, UsuarioUpdateDTO dto);
+
+    void alterarSenha(String login, UpdateSenhaDTO dto);
 }

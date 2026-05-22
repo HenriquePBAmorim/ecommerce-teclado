@@ -5,6 +5,7 @@ import br.unitins.tp1.teclado.dto.UsuarioRequestDTO;
 import br.unitins.tp1.teclado.dto.UsuarioResponseDTO;
 import br.unitins.tp1.teclado.dto.CadastroClienteDTO;
 import br.unitins.tp1.teclado.dto.UsuarioUpdateDTO;
+import br.unitins.tp1.teclado.dto.UpdateSenhaDTO;
 import br.unitins.tp1.teclado.model.Usuario;
 import br.unitins.tp1.teclado.service.UsuarioService;
 import jakarta.annotation.security.PermitAll;
@@ -83,5 +84,14 @@ public class UsuarioResource {
     public jakarta.ws.rs.core.Response atualizarPerfil(UsuarioUpdateDTO dto) {
         String login = jwt.getName();
         return jakarta.ws.rs.core.Response.ok(service.atualizarPerfil(login, dto)).build();
+    }
+
+    @jakarta.ws.rs.PATCH
+    @jakarta.ws.rs.Path("/alterar-senha")
+    @jakarta.annotation.security.RolesAllowed({"USER", "ADMIN"})
+    public jakarta.ws.rs.core.Response alterarSenha(@Valid UpdateSenhaDTO dto) {
+        String login = jwt.getName();
+        service.alterarSenha(login, dto);
+        return jakarta.ws.rs.core.Response.noContent().build();
     }
 }

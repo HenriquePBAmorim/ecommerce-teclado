@@ -4,6 +4,7 @@ import java.util.List;
 import br.unitins.tp1.teclado.dto.UsuarioRequestDTO;
 import br.unitins.tp1.teclado.dto.UsuarioResponseDTO;
 import br.unitins.tp1.teclado.dto.UsuarioUpdateDTO;
+import br.unitins.tp1.teclado.dto.UpdateSenhaDTO;
 import br.unitins.tp1.teclado.dto.CadastroClienteDTO;
 import br.unitins.tp1.teclado.model.Perfil;
 import br.unitins.tp1.teclado.model.Usuario;
@@ -114,5 +115,18 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setCpf(dto.cpf());
 
         return UsuarioResponseDTO.toDTO(usuario);
+    }
+
+    @Override
+    @Transactional
+    public void alterarSenha(String login, UpdateSenhaDTO dto) {
+        Usuario usuario = repository.findByLogin(login)
+                .orElseThrow(() -> new NotFoundException("Usuário logado não encontrado no sistema."));
+
+        if (!hashService.verificarBcrypt(dto.senhaAntiga(), usuario.getSenhaHash())) {
+            throw new IllegalArgumentException("Senha antiga incorreta.");
+        }
+
+        usuario.setSenhaHash(hashService.bcrypt(dto.novaSenha()));
     }
 }
