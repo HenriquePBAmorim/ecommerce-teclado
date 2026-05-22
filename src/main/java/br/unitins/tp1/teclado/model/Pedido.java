@@ -23,6 +23,12 @@ public class Pedido extends DefaultEntity {
     @JoinColumn(name = "id_endereco")
     private Endereco enderecoEntrega;
 
+    private FormaPagamento formaPagamento;
+
+    @ManyToOne
+    @JoinColumn(name = "id_cartao")
+    private CartaoCredito cartao;
+
     // Um pedido tem vários itens, o CascadeType.ALL salva o pedido e os itens
     // juntos.
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -67,6 +73,22 @@ public class Pedido extends DefaultEntity {
 
     public void setItens(List<ItemPedido> itens) {
         this.itens = itens;
+    }
+
+    public FormaPagamento getFormaPagamento() {
+        return formaPagamento;
+    }
+
+    public void setFormaPagamento(FormaPagamento formaPagamento) {
+        this.formaPagamento = formaPagamento;
+    }
+
+    public CartaoCredito getCartao() {
+        return cartao;
+    }
+
+    public void setCartao(CartaoCredito cartao) {
+        this.cartao = cartao;
     }
 
 }

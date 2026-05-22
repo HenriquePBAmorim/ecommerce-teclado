@@ -36,6 +36,9 @@ public class PedidoServiceImpl implements PedidoService {
     @Inject
     TecladoRepository tecladoRepository;
 
+    @Inject
+    br.unitins.tp1.teclado.repository.CartaoCreditoRepository cartaoRepository;
+
     @Override
     @Transactional
     public Pedido create(Long idUsuario, PedidoRequestDTO dto) {
@@ -55,6 +58,27 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setUsuario(usuario);
         pedido.setEnderecoEntrega(endereco);
         pedido.setDataHora(LocalDateTime.now());
+
+        // 3. Validação da Forma de Pagamento
+        br.unitins.tp1.teclado.model.FormaPagamento formaPagamento = br.unitins.tp1.teclado.model.FormaPagamento.valueOf(dto.idFormaPagamento());
+        pedido.setFormaPagamento(formaPagamento);
+
+        if (formaPagamento == br.unitins.tp1.teclado.model.FormaPagamento.CARTAO_CREDITO) {
+            if (dto.idCartao() == null) {
+                throw new IllegalArgumentException("Cartão não informado para pagamento via Cartão de Crédito.");
+            }
+            br.unitins.tp1.teclado.model.CartaoCredito cartao = cartaoRepository.findById(dto.idCartao());
+            if (cartao == null) {
+                throw new IllegalArgumentException("Cartão não encontrado.");
+            }
+            if (!cartao.getUsuario().getId().equals(idUsuario)) {
+                throw new jakarta.ws.rs.ForbiddenException("Este cartão não pertence a você.");
+            }
+            if (!cartao.getAtivo()) {
+                throw new IllegalArgumentException("Este cartão está inativo.");
+            }
+            pedido.setCartao(cartao);
+        }
 
         List<ItemPedido> itensPedido = new ArrayList<>();
         Double valorTotalCalculado = 0.0;
