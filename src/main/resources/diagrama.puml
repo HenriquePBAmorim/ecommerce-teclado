@@ -52,6 +52,55 @@ class Keycap {
     - cor: String
 }
 
+' USUÁRIOS E VENDAS (NOVAS CLASSES)
+
+class Usuario {
+    - id: Long
+    - nome: String
+    - login: String
+    - senha: String
+    - cpf: String
+}
+
+class Endereco {
+    - id: Long
+    - logradouro: String
+    - numero: String
+    - bairro: String
+    - cep: String
+    - ativo: Boolean
+    - principal: Boolean
+}
+
+class CartaoCredito {
+    - id: Long
+    - numeroCartao: String
+    - nomeTitular: String
+    - cpfTitular: String
+    - bandeira: String
+    - ativo: Boolean
+}
+
+class Cupom {
+    - id: Long
+    - codigo: String
+    - percentualDesconto: Double
+    - ativo: Boolean
+}
+
+class Pedido {
+    - id: Long
+    - dataHora: LocalDateTime
+    - valorTotal: Double
+    - valorDesconto: Double
+    - formaPagamento: FormaPagamento
+}
+
+class ItemPedido {
+    - quantidade: Integer
+    - precoUnitario: Double
+}
+
 ' ENUMS
 
 enum TipoSwitch {
@@ -64,24 +113,40 @@ enum PerfilKeycap {
     LABEL: String
 }
 
+enum FormaPagamento {
+    PIX
+    BOLETO
+    CARTAO_CREDITO
+}
+
 ' 1. Herança (Seta com ponta vazada)
 Produto <|-- Teclado
 
-' 2. Composição (Diamante preenchido) | Cardinalidade 1:1
+' 2. Composição (Diamante preenchido) | Cardinalidade
 Teclado "1" *-- "1" Estoque : controla >
+Pedido "1" *-- "*" ItemPedido : composto por >
 
 ' 3. Agregação (Diamante vazio) | Cardinalidade N:1
 Teclado "*" o-- "1" Switch : usa >
 Teclado "*" o-- "1" Keycap : usa >
 
-' 4. Associação Simples | Cardinalidade N:1
+' 4. Associação Simples | Cardinalidade N:1 e 1:N
 Teclado "*" --> "1" Marca : possui >
+Usuario "1" --> "*" Endereco : possui >
+Usuario "1" --> "*" CartaoCredito : possui >
+Usuario "1" --> "*" Pedido : realiza >
+Pedido "*" --> "1" Endereco : endereco de entrega >
+Pedido "*" --> "0..1" CartaoCredito : pago com >
+Pedido "*" --> "0..1" Cupom : utiliza >
+ItemPedido "*" --> "1" Teclado : refere-se a >
 
 ' 5. Associação Muitos-para-Muitos | Cardinalidade N:N
 Teclado "*" -- "*" Categoria : classificado como >
+Usuario "*" -- "*" Teclado : wishlist >
 
 ' 6. Associações dos Enums | Cardinalidade N:1
 Switch "*" --> "1" TipoSwitch : tipo >
 Keycap "*" --> "1" PerfilKeycap : perfil >
-' 
+Pedido "*" --> "1" FormaPagamento : forma >
+
 @enduml

@@ -27,12 +27,12 @@ public enum PerfilKeycap {
     }
 
     public static PerfilKeycap valueOf(Long id) {
-        if (id == null)
-            return null;
-        for (PerfilKeycap perfil : PerfilKeycap.values()) {
-            if (perfil.getId().equals(id))
-                return perfil;
+        if (id == null) return null;
+        for (PerfilKeycap e : PerfilKeycap.values()) {
+            if (e.getId().equals(id)) {
+                return e;
+            }
         }
-        return null;
+        throw new IllegalArgumentException("Id inválido no Enum: " + id);
     }
 }

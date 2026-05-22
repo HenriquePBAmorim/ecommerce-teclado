@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 public record PedidoRequestDTO(
         @NotNull(message = "O endereço de entrega é obrigatório") Long idEnderecoEntrega,
 
-        @NotNull(message = "A forma de pagamento é obrigatória") Integer idFormaPagamento,
+        @NotNull(message = "A forma de pagamento é obrigatória") Long idFormaPagamento,
 
         Long idCartao,
 
