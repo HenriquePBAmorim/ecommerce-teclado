@@ -23,6 +23,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Inject
     HashService hashService;
 
+    @Inject
+    br.unitins.tp1.teclado.repository.TecladoRepository tecladoRepository;
+
     @Override
     public List<Usuario> findAll() {
         return repository.findAll().list();
@@ -128,5 +131,48 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
 
         usuario.setSenhaHash(hashService.bcrypt(dto.novaSenha()));
+    }
+
+    @Override
+    @Transactional
+    public void adicionarNaListaDesejos(String login, Long idTeclado) {
+        Usuario usuario = repository.findByLogin(login)
+                .orElseThrow(() -> new NotFoundException("Usuário logado não encontrado no sistema."));
+        br.unitins.tp1.teclado.model.Teclado teclado = tecladoRepository.findById(idTeclado);
+        if (teclado == null) {
+            throw new NotFoundException("Teclado não encontrado.");
+        }
+        if (usuario.getListaDesejos() == null) {
+            usuario.setListaDesejos(new java.util.ArrayList<>());
+        }
+        if (!usuario.getListaDesejos().contains(teclado)) {
+            usuario.getListaDesejos().add(teclado);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void removerDaListaDesejos(String login, Long idTeclado) {
+        Usuario usuario = repository.findByLogin(login)
+                .orElseThrow(() -> new NotFoundException("Usuário logado não encontrado no sistema."));
+        br.unitins.tp1.teclado.model.Teclado teclado = tecladoRepository.findById(idTeclado);
+        if (teclado == null) {
+            throw new NotFoundException("Teclado não encontrado.");
+        }
+        if (usuario.getListaDesejos() != null) {
+            usuario.getListaDesejos().remove(teclado);
+        }
+    }
+
+    @Override
+    public List<br.unitins.tp1.teclado.dto.TecladoResponseDTO> buscarListaDesejos(String login) {
+        Usuario usuario = repository.findByLogin(login)
+                .orElseThrow(() -> new NotFoundException("Usuário logado não encontrado no sistema."));
+        if (usuario.getListaDesejos() == null) {
+            return new java.util.ArrayList<>();
+        }
+        return usuario.getListaDesejos().stream()
+                .map(br.unitins.tp1.teclado.mapper.TecladoMapper::toResponseDTO)
+                .toList();
     }
 }

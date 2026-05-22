@@ -24,4 +24,10 @@ public interface UsuarioService {
     UsuarioResponseDTO atualizarPerfil(String login, UsuarioUpdateDTO dto);
 
     void alterarSenha(String login, UpdateSenhaDTO dto);
+
+    void adicionarNaListaDesejos(String login, Long idTeclado);
+
+    void removerDaListaDesejos(String login, Long idTeclado);
+
+    List<br.unitins.tp1.teclado.dto.TecladoResponseDTO> buscarListaDesejos(String login);
 }

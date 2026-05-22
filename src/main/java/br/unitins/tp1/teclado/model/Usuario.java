@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
 @Entity
@@ -33,6 +35,10 @@ public class Usuario extends DefaultEntity {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Endereco> enderecos;
+
+    @ManyToMany
+    @JoinTable(name = "usuario_lista_desejos", joinColumns = @JoinColumn(name = "id_usuario"), inverseJoinColumns = @JoinColumn(name = "id_teclado"))
+    private List<Teclado> listaDesejos;
 
     // Getters e Setters originais
     public String getNome() {
@@ -89,6 +95,14 @@ public class Usuario extends DefaultEntity {
 
     public void setEnderecos(List<Endereco> enderecos) {
         this.enderecos = enderecos;
+    }
+
+    public List<Teclado> getListaDesejos() {
+        return listaDesejos;
+    }
+
+    public void setListaDesejos(List<Teclado> listaDesejos) {
+        this.listaDesejos = listaDesejos;
     }
 
 }

@@ -94,4 +94,30 @@ public class UsuarioResource {
         service.alterarSenha(login, dto);
         return jakarta.ws.rs.core.Response.noContent().build();
     }
+
+    @jakarta.ws.rs.POST
+    @jakarta.ws.rs.Path("/lista-desejos/{idTeclado}")
+    @jakarta.annotation.security.RolesAllowed({"USER", "ADMIN"})
+    public jakarta.ws.rs.core.Response adicionarNaListaDesejos(@jakarta.ws.rs.PathParam("idTeclado") Long idTeclado) {
+        String login = jwt.getName();
+        service.adicionarNaListaDesejos(login, idTeclado);
+        return jakarta.ws.rs.core.Response.status(jakarta.ws.rs.core.Response.Status.CREATED).build();
+    }
+
+    @jakarta.ws.rs.DELETE
+    @jakarta.ws.rs.Path("/lista-desejos/{idTeclado}")
+    @jakarta.annotation.security.RolesAllowed({"USER", "ADMIN"})
+    public jakarta.ws.rs.core.Response removerDaListaDesejos(@jakarta.ws.rs.PathParam("idTeclado") Long idTeclado) {
+        String login = jwt.getName();
+        service.removerDaListaDesejos(login, idTeclado);
+        return jakarta.ws.rs.core.Response.noContent().build();
+    }
+
+    @jakarta.ws.rs.GET
+    @jakarta.ws.rs.Path("/lista-desejos")
+    @jakarta.annotation.security.RolesAllowed({"USER", "ADMIN"})
+    public jakarta.ws.rs.core.Response buscarListaDesejos() {
+        String login = jwt.getName();
+        return jakarta.ws.rs.core.Response.ok(service.buscarListaDesejos(login)).build();
+    }
 }
