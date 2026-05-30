@@ -120,4 +120,20 @@ public class UsuarioResource {
         String login = jwt.getName();
         return jakarta.ws.rs.core.Response.ok(service.buscarListaDesejos(login)).build();
     }
+
+    @jakarta.ws.rs.PATCH
+    @jakarta.ws.rs.Path("/recuperar-senha/gerar-codigo")
+    @jakarta.annotation.security.PermitAll
+    public jakarta.ws.rs.core.Response gerarCodigoRecuperacao(@jakarta.validation.Valid br.unitins.tp1.teclado.dto.GerarCodigoDTO dto) {
+        service.gerarCodigoRecuperacao(dto);
+        return jakarta.ws.rs.core.Response.ok("Código de recuperação gerado com sucesso. Verifique seu e-mail.").build();
+    }
+
+    @jakarta.ws.rs.PATCH
+    @jakarta.ws.rs.Path("/recuperar-senha/confirmar")
+    @jakarta.annotation.security.PermitAll
+    public jakarta.ws.rs.core.Response atualizarSenhaRecuperada(@jakarta.validation.Valid br.unitins.tp1.teclado.dto.ConfirmarRecuperacaoDTO dto) {
+        service.atualizarSenhaRecuperada(dto);
+        return jakarta.ws.rs.core.Response.ok("Sua senha foi alterada com sucesso.").build();
+    }
 }

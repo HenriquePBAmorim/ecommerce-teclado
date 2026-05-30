@@ -164,9 +164,8 @@ class MunicipioResourceHttpContractTest {
                 .then()
                 .statusCode(400)
                 .contentType(ContentType.JSON)
-                .body("title", equalTo("Constraint Violation"))
-                .body("status", equalTo(400))
-                .body("violations", hasSize(greaterThanOrEqualTo(1)));
+                .body("code", equalTo("400"))
+                .body("errors", hasSize(greaterThanOrEqualTo(1)));
 
         verify(municipioService, never()).create(any(Municipio.class));
     }

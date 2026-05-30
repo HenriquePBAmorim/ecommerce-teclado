@@ -13,6 +13,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
+import io.quarkus.qute.Location;
+import io.quarkus.mailer.MailTemplate;
 
 @ApplicationScoped
 public class UsuarioServiceImpl implements UsuarioService {
@@ -22,6 +24,10 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Inject
     HashService hashService;
+
+    @Inject
+    @Location("recuperacao")
+    MailTemplate templateRecuperacao;
 
     @Inject
     br.unitins.tp1.teclado.repository.TecladoRepository tecladoRepository;
@@ -174,5 +180,50 @@ public class UsuarioServiceImpl implements UsuarioService {
         return usuario.getListaDesejos().stream()
                 .map(br.unitins.tp1.teclado.mapper.TecladoMapper::toResponseDTO)
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public void gerarCodigoRecuperacao(br.unitins.tp1.teclado.dto.GerarCodigoDTO dto) {
+        Usuario usuario = repository.find("login = ?1 and email = ?2", dto.login(), dto.email()).firstResult();
+        if (usuario == null) {
+            throw new NotFoundException("Usuário não encontrado com as informações fornecidas.");
+        }
+
+        String codigo = String.format("%06d", new java.util.Random().nextInt(999999));
+        
+        usuario.setCodigoRecuperacao(codigo);
+        usuario.setDataExpiracaoCodigo(java.time.LocalDateTime.now().plusMinutes(10));
+        usuario.setCodigoUsado(false);
+        templateRecuperacao
+            .data("usuario", usuario)
+            .data("codigo", codigo)
+            .to(usuario.getEmail())
+            .subject("Redefinição de Senha")
+            .send();
+    }
+
+    @Override
+    @Transactional
+    public void atualizarSenhaRecuperada(br.unitins.tp1.teclado.dto.ConfirmarRecuperacaoDTO dto) {
+        Usuario usuario = repository.find("email", dto.email()).firstResult();
+        if (usuario == null) {
+            throw new NotFoundException("Usuário não encontrado.");
+        }
+
+        if (usuario.getCodigoRecuperacao() == null || !usuario.getCodigoRecuperacao().equals(dto.codigo())) {
+            throw new IllegalArgumentException("Código inválido.");
+        }
+
+        if (usuario.getCodigoUsado() != null && usuario.getCodigoUsado()) {
+            throw new IllegalArgumentException("Este código já foi utilizado.");
+        }
+
+        if (usuario.getDataExpiracaoCodigo() == null || java.time.LocalDateTime.now().isAfter(usuario.getDataExpiracaoCodigo())) {
+            throw new IllegalArgumentException("O código expirou.");
+        }
+
+        usuario.setSenhaHash(hashService.bcrypt(dto.novaSenha()));
+        usuario.setCodigoUsado(true);
     }
 }

@@ -30,4 +30,8 @@ public interface UsuarioService {
     void removerDaListaDesejos(String login, Long idTeclado);
 
     List<br.unitins.tp1.teclado.dto.TecladoResponseDTO> buscarListaDesejos(String login);
+
+    void gerarCodigoRecuperacao(br.unitins.tp1.teclado.dto.GerarCodigoDTO dto);
+
+    void atualizarSenhaRecuperada(br.unitins.tp1.teclado.dto.ConfirmarRecuperacaoDTO dto);
 }

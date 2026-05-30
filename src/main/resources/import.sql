@@ -39,12 +39,12 @@ INSERT INTO teclado_categoria (id_teclado, id_categoria) VALUES (1, 1);
 INSERT INTO teclado_categoria (id_teclado, id_categoria) VALUES (2, 1);
 
 -- 6. USUÁRIOS (Senha: 123456)
--- Utilizando o Hash BCrypt que você gerou
-INSERT INTO usuario (nome, login, senha_hash, perfil, dataCadastro) 
-VALUES ('Administrador', 'admin', '$2a$10$DyM4Suxa8FSzEPiNujfKNuhobl/1tV/aGpPb9yz4sqPSqsmm1Tby2', 'ADMIN', CURRENT_TIMESTAMP);
+-- Utilizando o Hash BCrypt
+INSERT INTO usuario (nome, login, senha_hash, perfil, email, dataCadastro) 
+VALUES ('Administrador', 'admin', '$2a$10$DyM4Suxa8FSzEPiNujfKNuhobl/1tV/aGpPb9yz4sqPSqsmm1Tby2', 'ADMIN', 'admin@email.com', CURRENT_TIMESTAMP);
 
-INSERT INTO usuario (nome, login, senha_hash, perfil, dataCadastro) 
-VALUES ('João Cliente', 'joao', '$2a$10$DyM4Suxa8FSzEPiNujfKNuhobl/1tV/aGpPb9yz4sqPSqsmm1Tby2', 'USER', CURRENT_TIMESTAMP);
+INSERT INTO usuario (nome, login, senha_hash, perfil, email, dataCadastro) 
+VALUES ('Joao Cliente', 'joao', '$2a$10$DyM4Suxa8FSzEPiNujfKNuhobl/1tV/aGpPb9yz4sqPSqsmm1Tby2', 'USER', 'joao@email.com', CURRENT_TIMESTAMP);
 
 -- 7. ATUALIZAÇÃO DAS SEQUENCES (Essencial para não dar erro de ID duplicado)
 ALTER SEQUENCE estado_id_seq RESTART WITH 3;

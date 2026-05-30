@@ -1,0 +1,10 @@
+package br.unitins.tp1.teclado.dto;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public record GerarCodigoDTO(
+    @NotBlank(message = "O login é obrigatório") String login,
+    @NotBlank(message = "O e-mail é obrigatório") @Email(message = "E-mail inválido") String email
+) {
+}

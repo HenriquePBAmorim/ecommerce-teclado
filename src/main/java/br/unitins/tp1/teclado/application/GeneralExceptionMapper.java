@@ -9,8 +9,13 @@ public class GeneralExceptionMapper implements ExceptionMapper<Exception> {
 
     @Override
     public Response toResponse(Exception exception) {
-        // Imprime o erro no terminal
         exception.printStackTrace();
+
+        if (exception instanceof jakarta.ws.rs.WebApplicationException) {
+            jakarta.ws.rs.core.Response originalResponse = ((jakarta.ws.rs.WebApplicationException) exception).getResponse();
+            ErrorResponse error = new ErrorResponse(String.valueOf(originalResponse.getStatus()), exception.getMessage());
+            return Response.fromResponse(originalResponse).entity(error).build();
+        }
 
         ErrorResponse error = new ErrorResponse("500", "Erro interno no servidor. Por favor, contate o suporte.");
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error).build();

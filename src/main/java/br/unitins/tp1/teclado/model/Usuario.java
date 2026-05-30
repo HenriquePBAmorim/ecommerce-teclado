@@ -28,6 +28,11 @@ public class Usuario extends DefaultEntity {
 
     // Novos campos adicionados para o E-commerce:
     private String cpf;
+    private String email;
+
+    private String codigoRecuperacao;
+    private java.time.LocalDateTime dataExpiracaoCodigo;
+    private Boolean codigoUsado;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_usuario")
@@ -103,6 +108,38 @@ public class Usuario extends DefaultEntity {
 
     public void setListaDesejos(List<Teclado> listaDesejos) {
         this.listaDesejos = listaDesejos;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getCodigoRecuperacao() {
+        return codigoRecuperacao;
+    }
+
+    public void setCodigoRecuperacao(String codigoRecuperacao) {
+        this.codigoRecuperacao = codigoRecuperacao;
+    }
+
+    public java.time.LocalDateTime getDataExpiracaoCodigo() {
+        return dataExpiracaoCodigo;
+    }
+
+    public void setDataExpiracaoCodigo(java.time.LocalDateTime dataExpiracaoCodigo) {
+        this.dataExpiracaoCodigo = dataExpiracaoCodigo;
+    }
+
+    public Boolean getCodigoUsado() {
+        return codigoUsado;
+    }
+
+    public void setCodigoUsado(Boolean codigoUsado) {
+        this.codigoUsado = codigoUsado;
     }
 
 }
