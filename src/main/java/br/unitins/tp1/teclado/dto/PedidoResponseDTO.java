@@ -7,5 +7,7 @@ public record PedidoResponseDTO(
         Long id,
         LocalDateTime dataHora,
         Double valorTotal,
+        Double valorDesconto,
+        String codigoCupom,
         List<ItemPedidoResponseDTO> itens) {
 }

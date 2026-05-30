@@ -23,6 +23,8 @@ public class PedidoMapper {
                 pedido.getId(),
                 pedido.getDataHora(),
                 pedido.getValorTotal(),
+                pedido.getValorDesconto(),
+                pedido.getCupom() != null ? pedido.getCupom().getCodigo() : null,
                 itensDTO);
     }
 }

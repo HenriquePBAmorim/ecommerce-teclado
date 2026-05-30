@@ -39,6 +39,9 @@ public class PedidoServiceImpl implements PedidoService {
     @Inject
     br.unitins.tp1.teclado.repository.CartaoCreditoRepository cartaoRepository;
 
+    @Inject
+    br.unitins.tp1.teclado.repository.CupomRepository cupomRepository;
+
     @Override
     @Transactional
     public Pedido create(Long idUsuario, PedidoRequestDTO dto) {
@@ -112,6 +115,23 @@ public class PedidoServiceImpl implements PedidoService {
         }
 
         pedido.setItens(itensPedido);
+
+        if (dto.codigoCupom() != null && !dto.codigoCupom().trim().isEmpty()) {
+            br.unitins.tp1.teclado.model.Cupom cupom = cupomRepository.findByCodigo(dto.codigoCupom());
+            if (cupom == null) {
+                throw new IllegalArgumentException("Cupom não encontrado.");
+            }
+            if (!cupom.getAtivo()) {
+                throw new IllegalArgumentException("Este cupom está inativo.");
+            }
+            Double desconto = valorTotalCalculado * (cupom.getPercentualDesconto() / 100.0);
+            pedido.setValorDesconto(desconto);
+            pedido.setCupom(cupom);
+            valorTotalCalculado -= desconto;
+        } else {
+            pedido.setValorDesconto(0.0);
+        }
+
         pedido.setValorTotal(valorTotalCalculado);
 
         repository.persist(pedido);
@@ -134,8 +154,10 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
+    @Transactional
     public List<PedidoResponseDTO> meusPedidos(String login) {
         return repository.find("usuario.login", login)
+                .list()
                 .stream()
                 .map(PedidoMapper::toResponseDTO)
                 .toList();

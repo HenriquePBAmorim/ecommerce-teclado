@@ -29,6 +29,12 @@ public class Pedido extends DefaultEntity {
     @JoinColumn(name = "id_cartao")
     private CartaoCredito cartao;
 
+    private Double valorDesconto;
+
+    @ManyToOne
+    @JoinColumn(name = "id_cupom")
+    private Cupom cupom;
+
     // Um pedido tem vários itens, o CascadeType.ALL salva o pedido e os itens
     // juntos.
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -89,6 +95,22 @@ public class Pedido extends DefaultEntity {
 
     public void setCartao(CartaoCredito cartao) {
         this.cartao = cartao;
+    }
+
+    public Double getValorDesconto() {
+        return valorDesconto;
+    }
+
+    public void setValorDesconto(Double valorDesconto) {
+        this.valorDesconto = valorDesconto;
+    }
+
+    public Cupom getCupom() {
+        return cupom;
+    }
+
+    public void setCupom(Cupom cupom) {
+        this.cupom = cupom;
     }
 
 }

@@ -11,5 +11,7 @@ public record PedidoRequestDTO(
 
         Long idCartao,
 
+        String codigoCupom,
+
         @NotEmpty(message = "O pedido deve conter pelo menos um item") List<ItemPedidoRequestDTO> itens) {
 }
