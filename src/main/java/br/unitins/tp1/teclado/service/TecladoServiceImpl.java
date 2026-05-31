@@ -73,19 +73,19 @@ public class TecladoServiceImpl implements TecladoService {
     }
 
     @Override
-    public List<TecladoVitrineDTO> listarVitrine() {
+    public List<TecladoVitrineDTO> buscarParaVitrine() {
         return repository.find("estoque.quantidade > 0")
                 .stream()
-                .map(TecladoVitrineDTO::valueOf)
+                .map(TecladoVitrineDTO::toDTO)
                 .toList();
     }
 
     @Override
-    public TecladoVitrineDTO buscarVitrinePorId(Long id) {
+    public TecladoVitrineDTO buscarDetalhesVitrine(Long id) {
         Teclado teclado = repository.findById(id);
-        if (teclado == null) {
-            throw new NotFoundException("Produto não encontrado na vitrine.");
+        if (teclado == null || teclado.getEstoque() == null || teclado.getEstoque().getQuantidade() <= 0) {
+            throw new NotFoundException("Produto indisponível ou não encontrado na vitrine.");
         }
-        return TecladoVitrineDTO.valueOf(teclado);
+        return TecladoVitrineDTO.toDTO(teclado);
     }
 }

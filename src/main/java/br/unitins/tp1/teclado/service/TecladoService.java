@@ -17,7 +17,7 @@ public interface TecladoService {
 
     void delete(Long id);
 
-    List<TecladoVitrineDTO> listarVitrine();
+    List<TecladoVitrineDTO> buscarParaVitrine();
 
-    TecladoVitrineDTO buscarVitrinePorId(Long id);
+    TecladoVitrineDTO buscarDetalhesVitrine(Long id);
 }

@@ -7,15 +7,21 @@ public record TecladoVitrineDTO(
     String nome,
     String modelo,
     Double preco,
-    String marca
+    String nomeMarca,
+    String nomeSwitch,
+    String nomeKeycap,
+    Boolean emEstoque
 ) {
-    public static TecladoVitrineDTO valueOf(Teclado teclado) {
+    public static TecladoVitrineDTO toDTO(Teclado teclado) {
         return new TecladoVitrineDTO(
             teclado.getId(),
             teclado.getNome(), 
             teclado.getModelo(),
             teclado.getPreco(),
-            teclado.getMarca() != null ? teclado.getMarca().getNome() : "Sem marca"
+            teclado.getMarca() != null ? teclado.getMarca().getNome() : "Sem marca",
+            teclado.getSwitchTeclado() != null ? teclado.getSwitchTeclado().getNome() : "Genérico",
+            teclado.getKeycap() != null ? teclado.getKeycap().getNome() : "Padrão",
+            teclado.getEstoque() != null && teclado.getEstoque().getQuantidade() > 0
         );
     }
 }

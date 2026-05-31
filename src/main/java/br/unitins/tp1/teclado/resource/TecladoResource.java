@@ -88,17 +88,4 @@ public class TecladoResource {
         return Response.noContent().build();
     }
 
-    @GET
-    @Path("/vitrine")
-    @PermitAll
-    public Response vitrine() {
-        return Response.ok(service.listarVitrine()).build();
-    }
-
-    @GET
-    @Path("/vitrine/{id}")
-    @PermitAll
-    public Response buscarVitrinePorId(@PathParam("id") Long id) {
-        return Response.ok(service.buscarVitrinePorId(id)).build();
-    }
 }
