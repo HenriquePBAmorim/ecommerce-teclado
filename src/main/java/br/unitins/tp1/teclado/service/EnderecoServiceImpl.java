@@ -25,6 +25,16 @@ public class EnderecoServiceImpl implements EnderecoService {
     @Inject
     MunicipioRepository municipioRepository;
 
+    private void desmarcarPrincipais(Usuario usuario) {
+        List<Endereco> enderecos = repository.find("usuario = ?1 and ativo = true", usuario).list();
+        for (Endereco e : enderecos) {
+            if (Boolean.TRUE.equals(e.getPrincipal())) {
+                e.setPrincipal(false);
+                repository.persist(e);
+            }
+        }
+    }
+
     @Override
     public List<Endereco> findByUsuario(Long idUsuario) {
         return repository.findByUsuario(idUsuario).list();
@@ -56,6 +66,15 @@ public class EnderecoServiceImpl implements EnderecoService {
         Endereco endereco = EnderecoMapper.toEntity(dto);
         endereco.setUsuario(usuario);
         endereco.setMunicipio(municipio);
+        endereco.setAtivo(true);
+
+        if (Boolean.TRUE.equals(endereco.getPrincipal())) {
+            desmarcarPrincipais(usuario);
+        } else {
+            if (repository.find("usuario = ?1 and ativo = true", usuario).count() == 0) {
+                endereco.setPrincipal(true);
+            }
+        }
 
         repository.persist(endereco);
         return endereco;
@@ -80,6 +99,11 @@ public class EnderecoServiceImpl implements EnderecoService {
         entity.setBairro(dto.bairro());
         entity.setCep(dto.cep());
         entity.setMunicipio(municipio);
+
+        if (Boolean.TRUE.equals(dto.principal()) && !Boolean.TRUE.equals(entity.getPrincipal())) {
+            desmarcarPrincipais(entity.getUsuario());
+        }
+        entity.setPrincipal(dto.principal() != null ? dto.principal() : false);
     }
 
     @Override

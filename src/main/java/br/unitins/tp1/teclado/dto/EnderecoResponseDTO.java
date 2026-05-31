@@ -7,5 +7,6 @@ public record EnderecoResponseDTO(
         String complemento,
         String bairro,
         String cep,
-        MunicipioResponseDTO municipio) {
+        MunicipioResponseDTO municipio,
+        Boolean principal) {
 }

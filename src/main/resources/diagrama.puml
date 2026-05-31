@@ -8,7 +8,7 @@ abstract class Produto {
     - id: Long
     - nome: String
     - preco: Double
-    - dataCadastro: LocalDate
+    - dataCadastro: LocalDateTime
 }
 
 class Teclado {
@@ -21,7 +21,7 @@ class Teclado {
 class Estoque {
     - id: Long
     - quantidade: Integer
-    - dataAtualizacao: LocalDate
+    - dataAtualizacao: LocalDateTime
 }
 
 ' CATÁLOGO BASE
@@ -52,14 +52,24 @@ class Keycap {
     - cor: String
 }
 
-' USUÁRIOS E VENDAS (NOVAS CLASSES)
+' USUÁRIOS E VENDAS
 
 class Usuario {
     - id: Long
     - nome: String
     - login: String
-    - senha: String
+    - senhaHash: String
+    - email: String
     - cpf: String
+    - perfil: Perfil
+    - tentativasFalhas: Integer
+    - bloqueado: Boolean
+}
+
+class Telefone {
+    - id: Long
+    - codigoArea: String
+    - numero: String
 }
 
 class Endereco {
@@ -68,8 +78,21 @@ class Endereco {
     - numero: String
     - bairro: String
     - cep: String
+    - complemento: String
     - ativo: Boolean
     - principal: Boolean
+}
+
+class Municipio {
+    - id: Long
+    - nome: String
+}
+
+class Estado {
+    - id: Long
+    - nome: String
+    - sigla: String
+    - regiao: Integer
 }
 
 class CartaoCredito {
@@ -119,6 +142,11 @@ enum FormaPagamento {
     CARTAO_CREDITO
 }
 
+enum Perfil {
+    ADMIN
+    USER
+}
+
 ' 1. Herança (Seta com ponta vazada)
 Produto <|-- Teclado
 
@@ -133,8 +161,11 @@ Teclado "*" o-- "1" Keycap : usa >
 ' 4. Associação Simples | Cardinalidade N:1 e 1:N
 Teclado "*" --> "1" Marca : possui >
 Usuario "1" --> "*" Endereco : possui >
+Usuario "1" --> "*" Telefone : possui >
 Usuario "1" --> "*" CartaoCredito : possui >
 Usuario "1" --> "*" Pedido : realiza >
+Endereco "*" --> "1" Municipio : pertence a >
+Municipio "*" --> "1" Estado : pertence a >
 Pedido "*" --> "1" Endereco : endereco de entrega >
 Pedido "*" --> "0..1" CartaoCredito : pago com >
 Pedido "*" --> "0..1" Cupom : utiliza >
@@ -148,5 +179,6 @@ Usuario "*" -- "*" Teclado : wishlist >
 Switch "*" --> "1" TipoSwitch : tipo >
 Keycap "*" --> "1" PerfilKeycap : perfil >
 Pedido "*" --> "1" FormaPagamento : forma >
+Usuario "*" --> "1" Perfil : perfil >
 
 @enduml

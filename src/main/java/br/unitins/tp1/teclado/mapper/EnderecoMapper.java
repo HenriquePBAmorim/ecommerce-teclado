@@ -17,6 +17,7 @@ public class EnderecoMapper {
         endereco.setComplemento(dto.complemento());
         endereco.setBairro(dto.bairro());
         endereco.setCep(dto.cep());
+        endereco.setPrincipal(dto.principal() != null ? dto.principal() : false);
 
         Municipio municipio = new Municipio();
         municipio.setId(dto.idMunicipio());
@@ -36,6 +37,7 @@ public class EnderecoMapper {
                 endereco.getComplemento(),
                 endereco.getBairro(),
                 endereco.getCep(),
-                MunicipioMapper.toResponseDTO(endereco.getMunicipio()));
+                MunicipioMapper.toResponseDTO(endereco.getMunicipio()),
+                endereco.getPrincipal());
     }
 }

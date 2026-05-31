@@ -16,5 +16,7 @@ public record EnderecoRequestDTO(
 
         @NotBlank(message = "O CEP é obrigatório") @Pattern(regexp = "\\d{5}-\\d{3}", message = "O CEP deve estar no formato 00000-000") String cep,
 
-        @NotNull(message = "O município (id) é obrigatório") Long idMunicipio) {
+        @NotNull(message = "O município (id) é obrigatório") Long idMunicipio,
+
+        Boolean principal) {
 }
