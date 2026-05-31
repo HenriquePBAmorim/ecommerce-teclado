@@ -94,7 +94,7 @@ public class EnderecoResource {
     public Response alterar(@PathParam("id") Long id, @Valid EnderecoRequestDTO dto) {
         // Verifica se o endereço pertence ao usuário logado!
         // service.update(id, dto);
-        return Response.ok().build();
+        return Response.ok(java.util.Map.of("mensagem", "Endereço atualizado com sucesso!")).build();
     }
 
     @DELETE
@@ -102,6 +102,6 @@ public class EnderecoResource {
     @RolesAllowed({ "USER", "ADMIN" })
     public Response deletar(@PathParam("id") Long id) {
         service.delete(id);
-        return Response.noContent().build();
+        return Response.ok(java.util.Map.of("mensagem", "Endereço deletado com sucesso!")).build();
     }
 }

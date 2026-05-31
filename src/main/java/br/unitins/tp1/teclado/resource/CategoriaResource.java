@@ -63,7 +63,7 @@ public class CategoriaResource {
         if (service.findById(id) == null)
             return Response.status(Status.NOT_FOUND).build();
         service.update(id, CategoriaMapper.toEntity(dto));
-        return Response.ok().build();
+        return Response.ok(java.util.Map.of("mensagem", "Categoria atualizada com sucesso!")).build();
     }
 
     @DELETE
@@ -72,6 +72,6 @@ public class CategoriaResource {
         if (service.findById(id) == null)
             return Response.status(Status.NOT_FOUND).build();
         service.delete(id);
-        return Response.noContent().build();
+        return Response.ok(java.util.Map.of("mensagem", "Categoria deletada com sucesso!")).build();
     }
 }

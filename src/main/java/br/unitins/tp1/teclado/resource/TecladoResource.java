@@ -75,7 +75,7 @@ public class TecladoResource {
         if (service.findById(id) == null)
             return Response.status(Status.NOT_FOUND).build();
         service.update(id, TecladoMapper.toEntity(dto));
-        return Response.ok().build();
+        return Response.ok(java.util.Map.of("mensagem", "Teclado atualizado com sucesso!")).build();
     }
 
     @DELETE
@@ -85,7 +85,7 @@ public class TecladoResource {
         if (service.findById(id) == null)
             return Response.status(Status.NOT_FOUND).build();
         service.delete(id);
-        return Response.noContent().build();
+        return Response.ok(java.util.Map.of("mensagem", "Teclado deletado com sucesso!")).build();
     }
 
 }

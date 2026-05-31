@@ -61,7 +61,7 @@ public class KeycapResource {
             return Response.status(Status.NOT_FOUND).build();
         }
         service.update(id, KeycapMapper.toEntity(dto));
-        return Response.noContent().build();
+        return Response.ok(java.util.Map.of("mensagem", "Keycap atualizada com sucesso!")).build();
     }
 
     @DELETE
@@ -71,6 +71,6 @@ public class KeycapResource {
             return Response.status(Status.NOT_FOUND).build();
         }
         service.delete(id);
-        return Response.noContent().build();
+        return Response.ok(java.util.Map.of("mensagem", "Keycap deletada com sucesso!")).build();
     }
 }

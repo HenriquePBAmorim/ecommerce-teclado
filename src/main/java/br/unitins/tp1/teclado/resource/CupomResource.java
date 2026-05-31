@@ -46,7 +46,7 @@ public class CupomResource {
     @RolesAllowed({"ADMIN"})
     public Response desativar(@PathParam("id") Long id) {
         service.desativar(id);
-        return Response.noContent().build();
+        return Response.ok(java.util.Map.of("mensagem", "Cupom desativado com sucesso!")).build();
     }
 
     @GET

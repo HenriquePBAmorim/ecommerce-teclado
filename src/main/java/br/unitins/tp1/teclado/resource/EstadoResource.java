@@ -62,7 +62,7 @@ public class EstadoResource {
         if (service.findById(id) == null)
             return Response.status(Status.NOT_FOUND).build();
         service.delete(id);
-        return Response.noContent().build();
+        return Response.ok(java.util.Map.of("mensagem", "Estado deletado com sucesso!")).build();
     }
 
     @POST
@@ -77,6 +77,6 @@ public class EstadoResource {
         if (service.findById(id) == null)
             return Response.status(Status.NOT_FOUND).build();
         service.update(id, EstadoMapper.toEntity(dto));
-        return Response.ok().build(); // O professor retornou OK em vez de noContent aqui
+        return Response.ok(java.util.Map.of("mensagem", "Estado atualizado com sucesso!")).build();
     }
 }

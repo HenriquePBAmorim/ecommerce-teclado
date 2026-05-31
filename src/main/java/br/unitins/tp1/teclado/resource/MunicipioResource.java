@@ -78,7 +78,7 @@ public class MunicipioResource {
         if (service.findById(id) == null)
             return Response.status(Status.NOT_FOUND).build();
         service.update(id, MunicipioMapper.toEntity(dto));
-        return Response.ok().build();
+        return Response.ok(java.util.Map.of("mensagem", "Município atualizado com sucesso!")).build();
     }
 
     @DELETE
@@ -87,6 +87,6 @@ public class MunicipioResource {
         if (service.findById(id) == null)
             return Response.status(Status.NOT_FOUND).build();
         service.delete(id);
-        return Response.noContent().build();
+        return Response.ok(java.util.Map.of("mensagem", "Município deletado com sucesso!")).build();
     }
 }

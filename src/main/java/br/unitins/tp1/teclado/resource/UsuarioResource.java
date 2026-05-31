@@ -60,14 +60,14 @@ public class UsuarioResource {
     @Path("/{id}")
     public Response atualizar(@PathParam("id") Long id, @Valid UsuarioRequestDTO dto) {
         service.update(id, dto);
-        return Response.noContent().build();
+        return Response.ok(java.util.Map.of("mensagem", "Usuário atualizado com sucesso!")).build();
     }
 
     @DELETE
     @Path("/{id}")
     public Response deletar(@PathParam("id") Long id) {
         service.delete(id);
-        return Response.noContent().build();
+        return Response.ok(java.util.Map.of("mensagem", "Usuário deletado com sucesso!")).build();
     }
 
     @POST
@@ -93,7 +93,7 @@ public class UsuarioResource {
     public jakarta.ws.rs.core.Response alterarSenha(@Valid UpdateSenhaDTO dto) {
         String login = jwt.getName();
         service.alterarSenha(login, dto);
-        return jakarta.ws.rs.core.Response.noContent().build();
+        return jakarta.ws.rs.core.Response.ok(java.util.Map.of("mensagem", "Senha alterada com sucesso!")).build();
     }
 
     @jakarta.ws.rs.POST
@@ -102,7 +102,7 @@ public class UsuarioResource {
     public jakarta.ws.rs.core.Response adicionarNaListaDesejos(@jakarta.ws.rs.PathParam("idTeclado") Long idTeclado) {
         String login = jwt.getName();
         service.adicionarNaListaDesejos(login, idTeclado);
-        return jakarta.ws.rs.core.Response.status(jakarta.ws.rs.core.Response.Status.CREATED).build();
+        return jakarta.ws.rs.core.Response.status(jakarta.ws.rs.core.Response.Status.CREATED).entity(java.util.Map.of("mensagem", "Produto adicionado à lista de desejos com sucesso!")).build();
     }
 
     @jakarta.ws.rs.DELETE
@@ -111,7 +111,7 @@ public class UsuarioResource {
     public jakarta.ws.rs.core.Response removerDaListaDesejos(@jakarta.ws.rs.PathParam("idTeclado") Long idTeclado) {
         String login = jwt.getName();
         service.removerDaListaDesejos(login, idTeclado);
-        return jakarta.ws.rs.core.Response.noContent().build();
+        return jakarta.ws.rs.core.Response.ok(java.util.Map.of("mensagem", "Produto removido da lista de desejos com sucesso!")).build();
     }
 
     @jakarta.ws.rs.GET
@@ -128,7 +128,7 @@ public class UsuarioResource {
     public jakarta.ws.rs.core.Response gerarCodigoRecuperacao(
             @jakarta.validation.Valid br.unitins.tp1.teclado.dto.GerarCodigoDTO dto) {
         service.gerarCodigoRecuperacao(dto);
-        return jakarta.ws.rs.core.Response.ok("Código de recuperação gerado com sucesso. Verifique seu e-mail.")
+        return jakarta.ws.rs.core.Response.ok(java.util.Map.of("mensagem", "Código de recuperação gerado com sucesso. Verifique seu e-mail."))
                 .build();
     }
 
@@ -138,6 +138,6 @@ public class UsuarioResource {
     public jakarta.ws.rs.core.Response atualizarSenhaRecuperada(
             @jakarta.validation.Valid br.unitins.tp1.teclado.dto.ConfirmarRecuperacaoDTO dto) {
         service.atualizarSenhaRecuperada(dto);
-        return jakarta.ws.rs.core.Response.ok("Sua senha foi alterada com sucesso.").build();
+        return jakarta.ws.rs.core.Response.ok(java.util.Map.of("mensagem", "Sua senha foi alterada com sucesso.")).build();
     }
 }

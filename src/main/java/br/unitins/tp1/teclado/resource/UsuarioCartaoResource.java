@@ -47,6 +47,6 @@ public class UsuarioCartaoResource {
     public Response desativarCartao(@PathParam("idCartao") Long idCartao) {
         String login = jwt.getName();
         service.desativarCartao(login, idCartao);
-        return Response.noContent().build();
+        return Response.ok(java.util.Map.of("mensagem", "Cartão desativado com sucesso!")).build();
     }
 }

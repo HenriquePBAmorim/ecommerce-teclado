@@ -62,7 +62,7 @@ public class SwitchResource {
         if (service.findById(id) == null)
             return Response.status(Status.NOT_FOUND).build();
         service.update(id, SwitchMapper.toEntity(dto));
-        return Response.ok().build();
+        return Response.ok(java.util.Map.of("mensagem", "Switch atualizado com sucesso!")).build();
     }
 
     @DELETE
@@ -71,6 +71,6 @@ public class SwitchResource {
         if (service.findById(id) == null)
             return Response.status(Status.NOT_FOUND).build();
         service.delete(id);
-        return Response.noContent().build();
+        return Response.ok(java.util.Map.of("mensagem", "Switch deletado com sucesso!")).build();
     }
 }
