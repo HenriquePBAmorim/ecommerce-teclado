@@ -30,6 +30,9 @@ public class Usuario extends DefaultEntity {
     private String cpf;
     private String email;
 
+    private Integer tentativasFalhas = 0;
+    private Boolean bloqueado = false;
+
     private String codigoRecuperacao;
     private java.time.LocalDateTime dataExpiracaoCodigo;
     private Boolean codigoUsado;
@@ -140,6 +143,22 @@ public class Usuario extends DefaultEntity {
 
     public void setCodigoUsado(Boolean codigoUsado) {
         this.codigoUsado = codigoUsado;
+    }
+
+    public Integer getTentativasFalhas() {
+        return tentativasFalhas;
+    }
+
+    public void setTentativasFalhas(Integer tentativasFalhas) {
+        this.tentativasFalhas = tentativasFalhas;
+    }
+
+    public Boolean getBloqueado() {
+        return bloqueado;
+    }
+
+    public void setBloqueado(Boolean bloqueado) {
+        this.bloqueado = bloqueado;
     }
 
 }

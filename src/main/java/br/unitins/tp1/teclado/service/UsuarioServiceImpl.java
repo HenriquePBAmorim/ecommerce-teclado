@@ -133,11 +133,31 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = repository.findByLogin(login)
                 .orElseThrow(() -> new NotFoundException("Usuário logado não encontrado no sistema."));
 
-        if (!hashService.verificarBcrypt(dto.senhaAntiga(), usuario.getSenhaHash())) {
-            throw new IllegalArgumentException("Senha antiga incorreta.");
+        if (usuario.getBloqueado() != null && usuario.getBloqueado()) {
+            throw new jakarta.ws.rs.BadRequestException("Sua conta está bloqueada por excesso de tentativas. Entre em contato com o administrador.");
         }
 
+        if (!hashService.verificarBcrypt(dto.senhaAntiga(), usuario.getSenhaHash())) {
+            io.quarkus.narayana.jta.QuarkusTransaction.requiringNew().run(() -> {
+                Usuario u = repository.findById(usuario.getId());
+                int falhas = u.getTentativasFalhas() == null ? 0 : u.getTentativasFalhas();
+                u.setTentativasFalhas(falhas + 1);
+                if (u.getTentativasFalhas() >= 3) {
+                    u.setBloqueado(true);
+                }
+                repository.persist(u);
+            });
+
+            int falhasAtuais = (usuario.getTentativasFalhas() == null ? 0 : usuario.getTentativasFalhas()) + 1;
+            if (falhasAtuais >= 3) {
+                throw new jakarta.ws.rs.BadRequestException("Senha antiga incorreta. Sua conta foi bloqueada por excesso de tentativas.");
+            }
+            throw new jakarta.ws.rs.BadRequestException("Senha antiga incorreta.");
+        }
+
+        usuario.setTentativasFalhas(0);
         usuario.setSenhaHash(hashService.bcrypt(dto.novaSenha()));
+        repository.persist(usuario);
     }
 
     @Override
