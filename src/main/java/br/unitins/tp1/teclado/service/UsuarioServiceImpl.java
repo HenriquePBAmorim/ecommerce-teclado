@@ -97,21 +97,22 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional
-    public Usuario cadastrarCliente(CadastroClienteDTO dto) {
+    public UsuarioResponseDTO cadastrarCliente(CadastroClienteDTO dto) {
         if (repository.findByLogin(dto.login()).isPresent()) {
             throw new IllegalArgumentException("Este login já está em uso.");
         }
 
         Usuario usuario = new Usuario();
         usuario.setNome(dto.nome());
-        usuario.setCpf(dto.cpf());
         usuario.setLogin(dto.login());
+        usuario.setEmail(dto.email());
         usuario.setSenhaHash(hashService.bcrypt(dto.senha()));
         
         usuario.setPerfil(Perfil.USER);
+        usuario.setDataCadastro(java.time.LocalDateTime.now());
 
         repository.persist(usuario);
-        return usuario;
+        return UsuarioResponseDTO.toDTO(usuario);
     }
 
     @Override

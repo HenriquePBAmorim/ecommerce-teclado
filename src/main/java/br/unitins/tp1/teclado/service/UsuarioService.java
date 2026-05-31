@@ -19,7 +19,7 @@ public interface UsuarioService {
 
     void delete(Long id);
 
-    Usuario cadastrarCliente(CadastroClienteDTO dto);
+    UsuarioResponseDTO cadastrarCliente(CadastroClienteDTO dto);
 
     UsuarioResponseDTO atualizarPerfil(String login, UsuarioUpdateDTO dto);
 

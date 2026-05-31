@@ -74,13 +74,14 @@ public class UsuarioResource {
     @Path("/cadastro")
     @PermitAll
     public Response cadastrarCliente(@Valid CadastroClienteDTO dto) {
-        Usuario usuario = service.cadastrarCliente(dto);
-        return Response.status(Status.CREATED).entity(UsuarioResponseDTO.toDTO(usuario)).build();
+        service.cadastrarCliente(dto);
+        return Response.status(Status.CREATED).entity(java.util.Map.of("mensagem", "Cadastro realizado com sucesso!"))
+                .build();
     }
 
     @jakarta.ws.rs.PUT
     @jakarta.ws.rs.Path("/meu-perfil")
-    @jakarta.annotation.security.RolesAllowed({"USER", "ADMIN"})
+    @jakarta.annotation.security.RolesAllowed({ "USER", "ADMIN" })
     public jakarta.ws.rs.core.Response atualizarPerfil(UsuarioUpdateDTO dto) {
         String login = jwt.getName();
         return jakarta.ws.rs.core.Response.ok(service.atualizarPerfil(login, dto)).build();
@@ -88,7 +89,7 @@ public class UsuarioResource {
 
     @jakarta.ws.rs.PATCH
     @jakarta.ws.rs.Path("/alterar-senha")
-    @jakarta.annotation.security.RolesAllowed({"USER", "ADMIN"})
+    @jakarta.annotation.security.RolesAllowed({ "USER", "ADMIN" })
     public jakarta.ws.rs.core.Response alterarSenha(@Valid UpdateSenhaDTO dto) {
         String login = jwt.getName();
         service.alterarSenha(login, dto);
@@ -97,7 +98,7 @@ public class UsuarioResource {
 
     @jakarta.ws.rs.POST
     @jakarta.ws.rs.Path("/lista-desejos/{idTeclado}")
-    @jakarta.annotation.security.RolesAllowed({"USER", "ADMIN"})
+    @jakarta.annotation.security.RolesAllowed({ "USER", "ADMIN" })
     public jakarta.ws.rs.core.Response adicionarNaListaDesejos(@jakarta.ws.rs.PathParam("idTeclado") Long idTeclado) {
         String login = jwt.getName();
         service.adicionarNaListaDesejos(login, idTeclado);
@@ -106,7 +107,7 @@ public class UsuarioResource {
 
     @jakarta.ws.rs.DELETE
     @jakarta.ws.rs.Path("/lista-desejos/{idTeclado}")
-    @jakarta.annotation.security.RolesAllowed({"USER", "ADMIN"})
+    @jakarta.annotation.security.RolesAllowed({ "USER", "ADMIN" })
     public jakarta.ws.rs.core.Response removerDaListaDesejos(@jakarta.ws.rs.PathParam("idTeclado") Long idTeclado) {
         String login = jwt.getName();
         service.removerDaListaDesejos(login, idTeclado);
@@ -115,7 +116,7 @@ public class UsuarioResource {
 
     @jakarta.ws.rs.GET
     @jakarta.ws.rs.Path("/lista-desejos")
-    @jakarta.annotation.security.RolesAllowed({"USER", "ADMIN"})
+    @jakarta.annotation.security.RolesAllowed({ "USER", "ADMIN" })
     public jakarta.ws.rs.core.Response buscarListaDesejos() {
         String login = jwt.getName();
         return jakarta.ws.rs.core.Response.ok(service.buscarListaDesejos(login)).build();
@@ -124,15 +125,18 @@ public class UsuarioResource {
     @jakarta.ws.rs.PATCH
     @jakarta.ws.rs.Path("/recuperar-senha/gerar-codigo")
     @jakarta.annotation.security.PermitAll
-    public jakarta.ws.rs.core.Response gerarCodigoRecuperacao(@jakarta.validation.Valid br.unitins.tp1.teclado.dto.GerarCodigoDTO dto) {
+    public jakarta.ws.rs.core.Response gerarCodigoRecuperacao(
+            @jakarta.validation.Valid br.unitins.tp1.teclado.dto.GerarCodigoDTO dto) {
         service.gerarCodigoRecuperacao(dto);
-        return jakarta.ws.rs.core.Response.ok("Código de recuperação gerado com sucesso. Verifique seu e-mail.").build();
+        return jakarta.ws.rs.core.Response.ok("Código de recuperação gerado com sucesso. Verifique seu e-mail.")
+                .build();
     }
 
     @jakarta.ws.rs.PATCH
     @jakarta.ws.rs.Path("/recuperar-senha/confirmar")
     @jakarta.annotation.security.PermitAll
-    public jakarta.ws.rs.core.Response atualizarSenhaRecuperada(@jakarta.validation.Valid br.unitins.tp1.teclado.dto.ConfirmarRecuperacaoDTO dto) {
+    public jakarta.ws.rs.core.Response atualizarSenhaRecuperada(
+            @jakarta.validation.Valid br.unitins.tp1.teclado.dto.ConfirmarRecuperacaoDTO dto) {
         service.atualizarSenhaRecuperada(dto);
         return jakarta.ws.rs.core.Response.ok("Sua senha foi alterada com sucesso.").build();
     }
