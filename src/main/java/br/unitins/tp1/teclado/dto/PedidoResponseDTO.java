@@ -9,6 +9,7 @@ public record PedidoResponseDTO(
         LocalDateTime dataHora,
         Double valorTotal,
         Double valorDesconto,
+        Double valorFrete,
         String codigoCupom,
         List<ItemPedidoResponseDTO> itens) {
 }

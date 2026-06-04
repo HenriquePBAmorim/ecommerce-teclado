@@ -53,13 +53,17 @@ public class PedidoServiceImpl implements PedidoService {
 
         // 2. Validação do Endereço de Entrega
         Endereco endereco = enderecoRepository.findById(dto.idEnderecoEntrega());
-        if (endereco == null) {
-            throw new IllegalArgumentException("Endereço de entrega não encontrado.");
+        if (endereco == null || endereco.getMunicipio() == null || endereco.getMunicipio().getEstado() == null) {
+            throw new jakarta.ws.rs.BadRequestException("Endereço de entrega inválido ou incompleto.");
         }
+
+        String siglaEstado = endereco.getMunicipio().getEstado().getSigla();
+        Double valorFrete = (siglaEstado.equalsIgnoreCase("TO") || siglaEstado.equalsIgnoreCase("GO")) ? 0.0 : 45.0;
 
         Pedido pedido = new Pedido();
         pedido.setUsuario(usuario);
         pedido.setEnderecoEntrega(endereco);
+        pedido.setValorFrete(valorFrete);
         pedido.setDataHora(LocalDateTime.now());
         pedido.setStatus(br.unitins.tp1.teclado.model.StatusPedido.AGUARDANDO_PAGAMENTO);
 
@@ -145,6 +149,7 @@ public class PedidoServiceImpl implements PedidoService {
             pedido.setValorDesconto(pedido.getValorDesconto() + descontoCashback);
         }
 
+        valorTotalCalculado += pedido.getValorFrete();
         pedido.setValorTotal(valorTotalCalculado);
 
         repository.persist(pedido);

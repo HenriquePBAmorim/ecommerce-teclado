@@ -33,6 +33,8 @@ public class Pedido extends DefaultEntity {
     private CartaoCredito cartao;
 
     private Double valorDesconto;
+    
+    private Double valorFrete;
 
     @ManyToOne
     @JoinColumn(name = "id_cupom")
@@ -114,6 +116,14 @@ public class Pedido extends DefaultEntity {
 
     public void setValorDesconto(Double valorDesconto) {
         this.valorDesconto = valorDesconto;
+    }
+
+    public Double getValorFrete() {
+        return valorFrete;
+    }
+
+    public void setValorFrete(Double valorFrete) {
+        this.valorFrete = valorFrete;
     }
 
     public Cupom getCupom() {

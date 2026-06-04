@@ -25,6 +25,7 @@ public class PedidoMapper {
                 pedido.getDataHora(),
                 pedido.getValorTotal(),
                 pedido.getValorDesconto(),
+                pedido.getValorFrete(),
                 pedido.getCupom() != null ? pedido.getCupom().getCodigo() : null,
                 itensDTO);
     }
