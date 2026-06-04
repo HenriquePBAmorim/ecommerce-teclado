@@ -17,4 +17,6 @@ public interface PedidoService {
     List<PedidoResponseDTO> meusPedidos(String login);
 
     void cancelarPedido(Long idPedido, String loginUsuario);
+
+    void pagarPedido(Long idPedido, String loginUsuario);
 }

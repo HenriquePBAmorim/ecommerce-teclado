@@ -63,18 +63,38 @@ VALUES ('1234567890123456', 'JOAO CLIENTE', '11122233344', 'MASTERCARD', true, 2
 INSERT INTO cupom (codigo, percentualDesconto, ativo) VALUES ('NOTA10', 15.0, true);
 INSERT INTO cupom (codigo, percentualDesconto, ativo) VALUES ('EXPIRADO', 50.0, false);
 
--- 9. PEDIDO HISTÓRICO (Para testar a rota de listagem de pedidos do usuário)
--- Usando a Forma de Pagamento 3 (que costuma ser Cartão de Crédito no Enum)
-INSERT INTO pedido (dataHora, valorTotal, valorDesconto, formaPagamento, id_endereco, id_cartao, id_cupom, id_usuario) 
-VALUES (CURRENT_TIMESTAMP, 250.00, 0.0, 3, 1, 1, null, 2); 
+-- 9. PEDIDO HISTÓRICO (Cobrindo todos os cenários da Máquina de Estados do João)
 
-INSERT INTO itempedido (quantidade, precoUnitario, id_pedido, id_teclado) 
-VALUES (1, 250.00, 1, 1);
+-- Pedido 1: AGUARDANDO_PAGAMENTO (Pode ser usado para testar o cancelamento e pagamento)
+INSERT INTO pedido (dataHora, valorTotal, valorDesconto, formaPagamento, status, id_endereco, id_cartao, id_cupom, id_usuario) 
+VALUES (CURRENT_TIMESTAMP, 250.00, 0.0, 2, 'AGUARDANDO_PAGAMENTO', 1, 1, null, 2); 
+INSERT INTO itempedido (quantidade, preco, id_pedido, id_teclado) VALUES (1, 250.00, 1, 1);
+
+-- Pedido 2: PAGO (Pronto para ser embalado)
+INSERT INTO pedido (dataHora, valorTotal, valorDesconto, formaPagamento, status, id_endereco, id_cartao, id_cupom, id_usuario) 
+VALUES (CURRENT_TIMESTAMP, 450.00, 0.0, 2, 'PAGO', 1, 1, null, 2); 
+INSERT INTO itempedido (quantidade, preco, id_pedido, id_teclado) VALUES (1, 450.00, 2, 2);
+
+-- Pedido 3: ENVIADO (O cliente não pode mais cancelar este)
+INSERT INTO pedido (dataHora, valorTotal, valorDesconto, formaPagamento, status, id_endereco, id_cartao, id_cupom, id_usuario) 
+VALUES (CURRENT_TIMESTAMP, 250.00, 0.0, 2, 'ENVIADO', 1, 1, null, 2); 
+INSERT INTO itempedido (quantidade, preco, id_pedido, id_teclado) VALUES (1, 250.00, 3, 1);
+
+-- Pedido 4: ENTREGUE (Perfeito para você testar a rota POST de Avaliações com a trava de segurança)
+INSERT INTO pedido (dataHora, valorTotal, valorDesconto, formaPagamento, status, id_endereco, id_cartao, id_cupom, id_usuario) 
+VALUES (CURRENT_TIMESTAMP, 700.00, 0.0, 2, 'ENTREGUE', 1, 1, null, 2); 
+INSERT INTO itempedido (quantidade, preco, id_pedido, id_teclado) VALUES (1, 250.00, 4, 1);
+INSERT INTO itempedido (quantidade, preco, id_pedido, id_teclado) VALUES (1, 450.00, 4, 2);
+
+-- Pedido 5: CANCELADO (Compra abortada)
+INSERT INTO pedido (dataHora, valorTotal, valorDesconto, formaPagamento, status, id_endereco, id_cartao, id_cupom, id_usuario) 
+VALUES (CURRENT_TIMESTAMP, 250.00, 0.0, 2, 'CANCELADO', 1, 1, null, 2); 
+INSERT INTO itempedido (quantidade, preco, id_pedido, id_teclado) VALUES (1, 250.00, 5, 1);
 
 -- 10. LISTA DE DESEJOS (Many-to-Many)
 INSERT INTO usuario_lista_desejos (id_usuario, id_teclado) VALUES (2, 2);
 
--- 11. ATUALIZAÇÃO DAS SEQUENCES (Essencial para o Quarkus não dar erro de ID duplicado no POST)
+-- 11. ATUALIZAÇÃO DAS SEQUENCES (Recalculadas para os 5 novos pedidos)
 ALTER SEQUENCE estado_id_seq RESTART WITH 3;
 ALTER SEQUENCE municipio_id_seq RESTART WITH 3;
 ALTER SEQUENCE marca_id_seq RESTART WITH 4;
@@ -87,5 +107,5 @@ ALTER SEQUENCE usuario_id_seq RESTART WITH 3;
 ALTER SEQUENCE endereco_id_seq RESTART WITH 2;
 ALTER SEQUENCE cartaocredito_id_seq RESTART WITH 2;
 ALTER SEQUENCE cupom_id_seq RESTART WITH 3;
-ALTER SEQUENCE pedido_id_seq RESTART WITH 2;
-ALTER SEQUENCE itempedido_id_seq RESTART WITH 2;
+ALTER SEQUENCE pedido_id_seq RESTART WITH 6;
+ALTER SEQUENCE itempedido_id_seq RESTART WITH 7;

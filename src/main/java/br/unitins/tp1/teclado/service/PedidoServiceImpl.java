@@ -191,4 +191,22 @@ public class PedidoServiceImpl implements PedidoService {
         }
         repository.persist(pedido);
     }
+
+    @Override
+    @Transactional
+    public void pagarPedido(Long idPedido, String loginUsuario) {
+        Pedido pedido = repository.findById(idPedido);
+        if (pedido == null) {
+            throw new jakarta.ws.rs.NotFoundException("Pedido não encontrado.");
+        }
+        if (!pedido.getUsuario().getLogin().equals(loginUsuario)) {
+            throw new jakarta.ws.rs.ForbiddenException("Este pedido não pertence a você.");
+        }
+        if (pedido.getStatus() != br.unitins.tp1.teclado.model.StatusPedido.AGUARDANDO_PAGAMENTO) {
+            throw new IllegalArgumentException("Este pedido já foi pago ou cancelado.");
+        }
+
+        pedido.setStatus(br.unitins.tp1.teclado.model.StatusPedido.PAGO);
+        repository.persist(pedido);
+    }
 }
