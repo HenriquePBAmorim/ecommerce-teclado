@@ -14,7 +14,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.jwt.JsonWebToken;
+import io.quarkus.security.identity.SecurityIdentity;
 
 @Path("/meus-cartoes")
 @Produces(MediaType.APPLICATION_JSON)
@@ -25,19 +25,19 @@ public class UsuarioCartaoResource {
     UsuarioCartaoService service;
 
     @Inject
-    JsonWebToken jwt;
+    SecurityIdentity identity;
 
     @POST
     @RolesAllowed({"USER", "ADMIN"})
     public Response adicionarCartao(@Valid CartaoCreditoRequestDTO dto) {
-        String login = jwt.getName();
+        String login = identity.getPrincipal().getName();
         return Response.status(Response.Status.CREATED).entity(service.adicionarCartao(login, dto)).build();
     }
 
     @GET
     @RolesAllowed({"USER", "ADMIN"})
     public Response listarCartoes() {
-        String login = jwt.getName();
+        String login = identity.getPrincipal().getName();
         return Response.ok(service.listarCartoes(login)).build();
     }
 
@@ -45,7 +45,7 @@ public class UsuarioCartaoResource {
     @Path("/{idCartao}/desativar")
     @RolesAllowed({"USER", "ADMIN"})
     public Response desativarCartao(@PathParam("idCartao") Long idCartao) {
-        String login = jwt.getName();
+        String login = identity.getPrincipal().getName();
         service.desativarCartao(login, idCartao);
         return Response.ok(java.util.Map.of("mensagem", "Cartão desativado com sucesso!")).build();
     }

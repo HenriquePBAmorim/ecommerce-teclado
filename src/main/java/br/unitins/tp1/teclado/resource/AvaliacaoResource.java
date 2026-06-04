@@ -2,7 +2,7 @@ package br.unitins.tp1.teclado.resource;
 
 import java.util.Map;
 
-import org.eclipse.microprofile.jwt.JsonWebToken;
+import io.quarkus.security.identity.SecurityIdentity;
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
 import org.eclipse.microprofile.openapi.annotations.security.OAuthFlow;
 import org.eclipse.microprofile.openapi.annotations.security.OAuthFlows;
@@ -36,12 +36,12 @@ public class AvaliacaoResource {
     AvaliacaoService service;
 
     @Inject
-    JsonWebToken jwt;
+    SecurityIdentity identity;
 
     @POST
     @RolesAllowed({"USER", "ADMIN"})
     public Response insert(@Valid AvaliacaoRequestDTO dto) {
-        String login = jwt.getName();
+        String login = identity.getPrincipal().getName();
         service.insert(login, dto);
         return Response.status(Status.CREATED).entity(Map.of("mensagem", "Avaliação registrada com sucesso!")).build();
     }
