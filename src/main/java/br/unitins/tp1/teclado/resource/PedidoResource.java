@@ -110,4 +110,12 @@ public class PedidoResource {
         service.pagarPedido(id, login);
         return jakarta.ws.rs.core.Response.ok(java.util.Map.of("mensagem", "Pagamento aprovado com sucesso! O pedido agora está PAGO.")).build();
     }
+
+    @jakarta.ws.rs.PATCH
+    @jakarta.ws.rs.Path("/{id}/entregar")
+    @jakarta.annotation.security.RolesAllowed({"ADMIN"})
+    public jakarta.ws.rs.core.Response marcarComoEntregue(@jakarta.ws.rs.PathParam("id") Long id) {
+        service.marcarComoEntregue(id);
+        return jakarta.ws.rs.core.Response.ok(java.util.Map.of("mensagem", "Pedido entregue com sucesso. Cashback de 5% creditado na conta do cliente!")).build();
+    }
 }

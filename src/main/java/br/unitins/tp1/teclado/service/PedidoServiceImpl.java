@@ -133,6 +133,18 @@ public class PedidoServiceImpl implements PedidoService {
             pedido.setValorDesconto(0.0);
         }
 
+        if (Boolean.TRUE.equals(dto.usarCashback()) && usuario.getSaldoCashback() != null && usuario.getSaldoCashback() > 0.0) {
+            Double descontoCashback = Math.min(valorTotalCalculado, usuario.getSaldoCashback());
+            valorTotalCalculado -= descontoCashback;
+            
+            // Abate do saldo do usuário o que foi usado
+            usuario.setSaldoCashback(usuario.getSaldoCashback() - descontoCashback);
+            usuarioRepository.persist(usuario);
+            
+            // Soma o cashback usado ao valor do desconto (para aparecer no ResponseDTO)
+            pedido.setValorDesconto(pedido.getValorDesconto() + descontoCashback);
+        }
+
         pedido.setValorTotal(valorTotalCalculado);
 
         repository.persist(pedido);
@@ -207,6 +219,28 @@ public class PedidoServiceImpl implements PedidoService {
         }
 
         pedido.setStatus(br.unitins.tp1.teclado.model.StatusPedido.PAGO);
+        repository.persist(pedido);
+    }
+
+    @Override
+    @Transactional
+    public void marcarComoEntregue(Long idPedido) {
+        Pedido pedido = repository.findById(idPedido);
+        if (pedido == null) {
+            throw new jakarta.ws.rs.NotFoundException("Pedido não encontrado.");
+        }
+        if (pedido.getStatus() != br.unitins.tp1.teclado.model.StatusPedido.ENVIADO && 
+            pedido.getStatus() != br.unitins.tp1.teclado.model.StatusPedido.PAGO) {
+            throw new IllegalArgumentException("O pedido não está em um estado válido para ser entregue.");
+        }
+
+        pedido.setStatus(br.unitins.tp1.teclado.model.StatusPedido.ENTREGUE);
+        
+        Usuario usuario = pedido.getUsuario();
+        Double cashback = pedido.getValorTotal() * 0.05;
+        usuario.setSaldoCashback((usuario.getSaldoCashback() == null ? 0.0 : usuario.getSaldoCashback()) + cashback);
+        
+        usuarioRepository.persist(usuario);
         repository.persist(pedido);
     }
 }

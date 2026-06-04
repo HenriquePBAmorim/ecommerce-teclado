@@ -19,4 +19,6 @@ public interface PedidoService {
     void cancelarPedido(Long idPedido, String loginUsuario);
 
     void pagarPedido(Long idPedido, String loginUsuario);
+
+    void marcarComoEntregue(Long idPedido);
 }

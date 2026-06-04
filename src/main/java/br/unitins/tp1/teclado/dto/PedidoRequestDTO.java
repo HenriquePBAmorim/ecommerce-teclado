@@ -13,5 +13,7 @@ public record PedidoRequestDTO(
 
         String codigoCupom,
 
+        Boolean usarCashback,
+
         @NotEmpty(message = "O pedido deve conter pelo menos um item") List<ItemPedidoRequestDTO> itens) {
 }

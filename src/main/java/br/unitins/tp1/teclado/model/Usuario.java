@@ -32,6 +32,7 @@ public class Usuario extends DefaultEntity {
 
     private Integer tentativasFalhas = 0;
     private Boolean bloqueado = false;
+    private Double saldoCashback = 0.0;
 
     private String codigoRecuperacao;
     private java.time.LocalDateTime dataExpiracaoCodigo;
@@ -161,4 +162,11 @@ public class Usuario extends DefaultEntity {
         this.bloqueado = bloqueado;
     }
 
+    public Double getSaldoCashback() {
+        return saldoCashback;
+    }
+
+    public void setSaldoCashback(Double saldoCashback) {
+        this.saldoCashback = saldoCashback;
+    }
 }
