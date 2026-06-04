@@ -15,4 +15,6 @@ public interface PedidoService {
     Pedido findById(Long id);
 
     List<PedidoResponseDTO> meusPedidos(String login);
+
+    void cancelarPedido(Long idPedido, String loginUsuario);
 }

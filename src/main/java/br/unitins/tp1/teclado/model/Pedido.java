@@ -12,6 +12,9 @@ import jakarta.persistence.OneToMany;
 @Entity
 public class Pedido extends DefaultEntity {
 
+    @jakarta.persistence.Enumerated(jakarta.persistence.EnumType.STRING)
+    private StatusPedido status;
+
     private LocalDateTime dataHora;
     private Double valorTotal;
 
@@ -40,6 +43,14 @@ public class Pedido extends DefaultEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_pedido")
     private List<ItemPedido> itens;
+
+    public StatusPedido getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusPedido status) {
+        this.status = status;
+    }
 
     public LocalDateTime getDataHora() {
         return dataHora;

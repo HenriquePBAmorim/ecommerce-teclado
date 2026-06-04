@@ -61,6 +61,7 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setUsuario(usuario);
         pedido.setEnderecoEntrega(endereco);
         pedido.setDataHora(LocalDateTime.now());
+        pedido.setStatus(br.unitins.tp1.teclado.model.StatusPedido.AGUARDANDO_PAGAMENTO);
 
         // 3. Validação da Forma de Pagamento
         br.unitins.tp1.teclado.model.FormaPagamento formaPagamento = br.unitins.tp1.teclado.model.FormaPagamento.valueOf(dto.idFormaPagamento());
@@ -161,5 +162,33 @@ public class PedidoServiceImpl implements PedidoService {
                 .stream()
                 .map(PedidoMapper::toResponseDTO)
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public void cancelarPedido(Long idPedido, String loginUsuario) {
+        Pedido pedido = repository.findById(idPedido);
+        if (pedido == null) {
+            throw new jakarta.ws.rs.NotFoundException("Pedido não encontrado.");
+        }
+        if (!pedido.getUsuario().getLogin().equals(loginUsuario)) {
+            throw new jakarta.ws.rs.ForbiddenException("Este pedido não pertence a você.");
+        }
+        if (pedido.getStatus() != br.unitins.tp1.teclado.model.StatusPedido.AGUARDANDO_PAGAMENTO && 
+            pedido.getStatus() != br.unitins.tp1.teclado.model.StatusPedido.PAGO) {
+            throw new IllegalArgumentException("Não é possível cancelar um pedido que já foi enviado ou finalizado.");
+        }
+
+        pedido.setStatus(br.unitins.tp1.teclado.model.StatusPedido.CANCELADO);
+
+        for (ItemPedido item : pedido.getItens()) {
+            Teclado teclado = item.getTeclado();
+            if (teclado != null && teclado.getEstoque() != null) {
+                int novoEstoque = teclado.getEstoque().getQuantidade() + item.getQuantidade();
+                teclado.getEstoque().setQuantidade(novoEstoque);
+                tecladoRepository.persist(teclado);
+            }
+        }
+        repository.persist(pedido);
     }
 }

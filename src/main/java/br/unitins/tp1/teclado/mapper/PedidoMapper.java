@@ -21,6 +21,7 @@ public class PedidoMapper {
 
         return new PedidoResponseDTO(
                 pedido.getId(),
+                pedido.getStatus(),
                 pedido.getDataHora(),
                 pedido.getValorTotal(),
                 pedido.getValorDesconto(),

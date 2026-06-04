@@ -92,4 +92,13 @@ public class PedidoResource {
         String login = jwt.getName();
         return jakarta.ws.rs.core.Response.ok(service.meusPedidos(login)).build();
     }
+
+    @jakarta.ws.rs.PATCH
+    @jakarta.ws.rs.Path("/{id}/cancelar")
+    @jakarta.annotation.security.RolesAllowed({"USER", "ADMIN"})
+    public jakarta.ws.rs.core.Response cancelarPedido(@jakarta.ws.rs.PathParam("id") Long id) {
+        String login = jwt.getName();
+        service.cancelarPedido(id, login);
+        return jakarta.ws.rs.core.Response.ok(java.util.Map.of("mensagem", "Pedido cancelado com sucesso e estoque estornado.")).build();
+    }
 }
