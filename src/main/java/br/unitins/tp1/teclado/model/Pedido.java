@@ -46,6 +46,9 @@ public class Pedido extends DefaultEntity {
     @JoinColumn(name = "id_pedido")
     private List<ItemPedido> itens;
 
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HistoricoPedido> historico = new java.util.ArrayList<>();
+
     public StatusPedido getStatus() {
         return status;
     }
@@ -132,6 +135,14 @@ public class Pedido extends DefaultEntity {
 
     public void setCupom(Cupom cupom) {
         this.cupom = cupom;
+    }
+
+    public List<HistoricoPedido> getHistorico() {
+        return historico;
+    }
+
+    public void setHistorico(List<HistoricoPedido> historico) {
+        this.historico = historico;
     }
 
 }

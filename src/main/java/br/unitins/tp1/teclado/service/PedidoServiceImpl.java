@@ -42,6 +42,12 @@ public class PedidoServiceImpl implements PedidoService {
     @Inject
     br.unitins.tp1.teclado.repository.CupomRepository cupomRepository;
 
+    @Inject
+    br.unitins.tp1.teclado.repository.HistoricoPedidoRepository historicoRepository;
+
+    @Inject
+    io.quarkus.security.identity.SecurityIdentity identity;
+
     @Override
     @Transactional
     public Pedido create(Long idUsuario, PedidoRequestDTO dto) {
@@ -153,6 +159,7 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setValorTotal(valorTotalCalculado);
 
         repository.persist(pedido);
+        registrarHistorico(pedido, null, br.unitins.tp1.teclado.model.StatusPedido.AGUARDANDO_PAGAMENTO);
         return pedido;
     }
 
@@ -196,6 +203,7 @@ public class PedidoServiceImpl implements PedidoService {
             throw new IllegalArgumentException("Não é possível cancelar um pedido que já foi enviado ou finalizado.");
         }
 
+        br.unitins.tp1.teclado.model.StatusPedido statusAnterior = pedido.getStatus();
         pedido.setStatus(br.unitins.tp1.teclado.model.StatusPedido.CANCELADO);
 
         for (ItemPedido item : pedido.getItens()) {
@@ -207,6 +215,7 @@ public class PedidoServiceImpl implements PedidoService {
             }
         }
         repository.persist(pedido);
+        registrarHistorico(pedido, statusAnterior, br.unitins.tp1.teclado.model.StatusPedido.CANCELADO);
     }
 
     @Override
@@ -223,8 +232,10 @@ public class PedidoServiceImpl implements PedidoService {
             throw new IllegalArgumentException("Este pedido já foi pago ou cancelado.");
         }
 
+        br.unitins.tp1.teclado.model.StatusPedido statusAnterior = pedido.getStatus();
         pedido.setStatus(br.unitins.tp1.teclado.model.StatusPedido.PAGO);
         repository.persist(pedido);
+        registrarHistorico(pedido, statusAnterior, br.unitins.tp1.teclado.model.StatusPedido.PAGO);
     }
 
     @Override
@@ -239,6 +250,7 @@ public class PedidoServiceImpl implements PedidoService {
             throw new IllegalArgumentException("O pedido não está em um estado válido para ser entregue.");
         }
 
+        br.unitins.tp1.teclado.model.StatusPedido statusAnterior = pedido.getStatus();
         pedido.setStatus(br.unitins.tp1.teclado.model.StatusPedido.ENTREGUE);
         
         Usuario usuario = pedido.getUsuario();
@@ -247,5 +259,26 @@ public class PedidoServiceImpl implements PedidoService {
         
         usuarioRepository.persist(usuario);
         repository.persist(pedido);
+        registrarHistorico(pedido, statusAnterior, br.unitins.tp1.teclado.model.StatusPedido.ENTREGUE);
+    }
+
+    private void registrarHistorico(Pedido pedido, br.unitins.tp1.teclado.model.StatusPedido statusAnterior, br.unitins.tp1.teclado.model.StatusPedido statusNovo) {
+        br.unitins.tp1.teclado.model.HistoricoPedido historico = new br.unitins.tp1.teclado.model.HistoricoPedido();
+        historico.setPedido(pedido);
+        historico.setStatusAnterior(statusAnterior);
+        historico.setStatusNovo(statusNovo);
+        historico.setDataHora(java.time.LocalDateTime.now());
+        
+        String nomeUsuario = "SISTEMA/SQL";
+        try {
+            if (identity != null && identity.getPrincipal() != null) {
+                nomeUsuario = identity.getPrincipal().getName();
+            }
+        } catch (Exception e) {
+            // Ignora erro caso não haja requisição HTTP ativa
+        }
+        historico.setUsuarioResponsavel(nomeUsuario);
+        
+        historicoRepository.persist(historico);
     }
 }

@@ -19,6 +19,16 @@ public class PedidoMapper {
                         item.getPreco()))
                 .toList();
 
+        List<br.unitins.tp1.teclado.dto.HistoricoPedidoResponseDTO> historicoDTO = pedido.getHistorico() != null ? 
+                pedido.getHistorico().stream()
+                .map(h -> new br.unitins.tp1.teclado.dto.HistoricoPedidoResponseDTO(
+                        h.getId(),
+                        h.getStatusAnterior(),
+                        h.getStatusNovo(),
+                        h.getDataHora(),
+                        h.getUsuarioResponsavel()
+                )).toList() : new java.util.ArrayList<>();
+
         return new PedidoResponseDTO(
                 pedido.getId(),
                 pedido.getStatus(),
@@ -27,6 +37,7 @@ public class PedidoMapper {
                 pedido.getValorDesconto(),
                 pedido.getValorFrete(),
                 pedido.getCupom() != null ? pedido.getCupom().getCodigo() : null,
-                itensDTO);
+                itensDTO,
+                historicoDTO);
     }
 }

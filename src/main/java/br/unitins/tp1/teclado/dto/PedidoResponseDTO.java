@@ -11,5 +11,6 @@ public record PedidoResponseDTO(
         Double valorDesconto,
         Double valorFrete,
         String codigoCupom,
-        List<ItemPedidoResponseDTO> itens) {
+        List<ItemPedidoResponseDTO> itens,
+        List<HistoricoPedidoResponseDTO> historico) {
 }
