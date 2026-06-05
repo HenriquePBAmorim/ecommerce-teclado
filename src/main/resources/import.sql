@@ -34,9 +34,9 @@ INSERT INTO switch (nome, fabricante, id_tipo_switch, forcaAtuacao) VALUES ('Che
 INSERT INTO keycap (nome, material, id_perfil, cor) VALUES ('HyperX Pudding', 'PBT', 2, 'Preto');
 
 -- 4. ESTOQUE (INCLUINDO O PRODUTO ESGOTADO PARA TESTE DA VITRINE)
-INSERT INTO estoque (quantidade, data_atualizacao, version) VALUES (15, CURRENT_TIMESTAMP, 0);
-INSERT INTO estoque (quantidade, data_atualizacao, version) VALUES (8, CURRENT_TIMESTAMP, 0);
-INSERT INTO estoque (quantidade, data_atualizacao, version) VALUES (0, CURRENT_TIMESTAMP, 0); -- Estoque zerado
+INSERT INTO estoque (quantidade, data_atualizacao, version) VALUES (15, CURRENT_DATE, 0);
+INSERT INTO estoque (quantidade, data_atualizacao, version) VALUES (8, CURRENT_DATE, 0);
+INSERT INTO estoque (quantidade, data_atualizacao, version) VALUES (0, CURRENT_DATE, 0); -- Estoque zerado
 
 -- 5. PRODUTOS E TECLADOS (Herança JOINED)
 -- Teclado 1: Redragon
@@ -76,55 +76,70 @@ INSERT INTO endereco (logradouro, numero, bairro, cep, complemento, ativo, princ
 VALUES ('Avenida Paulista', '1000', 'Bela Vista', '01311-000', 'Bloco B', true, false, 3, 2);
 
 INSERT INTO cartaocredito (numeroCartao, nomeTitular, cpfTitular, bandeira, ativo, id_usuario) 
-VALUES ('1234567890123456', 'JOAO CLIENTE', '11122233344', 'MASTERCARD', true, 2);
+VALUES ('XXXX-XXXX-XXXX-3456', 'JOAO CLIENTE', '11122233344', 'MASTERCARD', true, 2);
 
 -- 8. CUPONS (Um ativo e um expirado para testes)
 INSERT INTO cupom (codigo, percentualDesconto, ativo) VALUES ('NOTA10', 15.0, true);
 INSERT INTO cupom (codigo, percentualDesconto, ativo) VALUES ('EXPIRADO', 50.0, false);
 
--- 9. PEDIDO HISTÓRICO (Com a nova coluna valorFrete)
+-- 9. PEDIDO HISTÓRICO E AUDITORIA LOGÍSTICA
 
 -- Pedido 1: AGUARDANDO_PAGAMENTO (Palmas - TO: Frete 0.0)
 INSERT INTO pedido (dataHora, valorTotal, valorFrete, valorDesconto, formaPagamento, status, id_endereco, id_cartao, id_cupom, id_usuario) 
 VALUES (CURRENT_TIMESTAMP, 250.00, 0.0, 0.0, 2, 'AGUARDANDO_PAGAMENTO', 1, 1, null, 2); 
 INSERT INTO itempedido (quantidade, preco, id_pedido, id_teclado) VALUES (1, 250.00, 1, 1);
+INSERT INTO historicopedido (dataHora, statusAnterior, statusNovo, usuarioResponsavel, id_pedido) 
+VALUES (CURRENT_TIMESTAMP, null, 'AGUARDANDO_PAGAMENTO', 'joao', 1);
 
 -- Pedido 2: PAGO (Palmas - TO: Frete 0.0)
 INSERT INTO pedido (dataHora, valorTotal, valorFrete, valorDesconto, formaPagamento, status, id_endereco, id_cartao, id_cupom, id_usuario) 
 VALUES (CURRENT_TIMESTAMP, 450.00, 0.0, 0.0, 2, 'PAGO', 1, 1, null, 2); 
 INSERT INTO itempedido (quantidade, preco, id_pedido, id_teclado) VALUES (1, 450.00, 2, 2);
+INSERT INTO historicopedido (dataHora, statusAnterior, statusNovo, usuarioResponsavel, id_pedido) 
+VALUES (CURRENT_TIMESTAMP, null, 'AGUARDANDO_PAGAMENTO', 'joao', 2);
+INSERT INTO historicopedido (dataHora, statusAnterior, statusNovo, usuarioResponsavel, id_pedido) 
+VALUES (CURRENT_TIMESTAMP, 'AGUARDANDO_PAGAMENTO', 'PAGO', 'joao', 2);
 
 -- Pedido 3: ENVIADO (Palmas - TO: Frete 0.0)
 INSERT INTO pedido (dataHora, valorTotal, valorFrete, valorDesconto, formaPagamento, status, id_endereco, id_cartao, id_cupom, id_usuario) 
 VALUES (CURRENT_TIMESTAMP, 250.00, 0.0, 0.0, 2, 'ENVIADO', 1, 1, null, 2); 
 INSERT INTO itempedido (quantidade, preco, id_pedido, id_teclado) VALUES (1, 250.00, 3, 1);
+INSERT INTO historicopedido (dataHora, statusAnterior, statusNovo, usuarioResponsavel, id_pedido) 
+VALUES (CURRENT_TIMESTAMP, null, 'AGUARDANDO_PAGAMENTO', 'joao', 3);
+INSERT INTO historicopedido (dataHora, statusAnterior, statusNovo, usuarioResponsavel, id_pedido) 
+VALUES (CURRENT_TIMESTAMP, 'AGUARDANDO_PAGAMENTO', 'PAGO', 'joao', 3);
+INSERT INTO historicopedido (dataHora, statusAnterior, statusNovo, usuarioResponsavel, id_pedido) 
+VALUES (CURRENT_TIMESTAMP, 'PAGO', 'ENVIADO', 'admin', 3);
 
 -- Pedido 4: ENTREGUE (Palmas - TO: Frete 0.0)
 INSERT INTO pedido (dataHora, valorTotal, valorFrete, valorDesconto, formaPagamento, status, id_endereco, id_cartao, id_cupom, id_usuario) 
 VALUES (CURRENT_TIMESTAMP, 700.00, 0.0, 0.0, 2, 'ENTREGUE', 1, 1, null, 2); 
 INSERT INTO itempedido (quantidade, preco, id_pedido, id_teclado) VALUES (1, 250.00, 4, 1);
 INSERT INTO itempedido (quantidade, preco, id_pedido, id_teclado) VALUES (1, 450.00, 4, 2);
+INSERT INTO historicopedido (dataHora, statusAnterior, statusNovo, usuarioResponsavel, id_pedido) 
+VALUES (CURRENT_TIMESTAMP, null, 'AGUARDANDO_PAGAMENTO', 'joao', 4);
+INSERT INTO historicopedido (dataHora, statusAnterior, statusNovo, usuarioResponsavel, id_pedido) 
+VALUES (CURRENT_TIMESTAMP, 'AGUARDANDO_PAGAMENTO', 'PAGO', 'joao', 4);
+INSERT INTO historicopedido (dataHora, statusAnterior, statusNovo, usuarioResponsavel, id_pedido) 
+VALUES (CURRENT_TIMESTAMP, 'PAGO', 'ENVIADO', 'admin', 4);
+INSERT INTO historicopedido (dataHora, statusAnterior, statusNovo, usuarioResponsavel, id_pedido) 
+VALUES (CURRENT_TIMESTAMP, 'ENVIADO', 'ENTREGUE', 'admin', 4);
 
 -- Pedido 5: CANCELADO (São Paulo - SP: Frete 45.0 aplicado -> 250 do teclado + 45 do frete = 295.00)
 INSERT INTO pedido (dataHora, valorTotal, valorFrete, valorDesconto, formaPagamento, status, id_endereco, id_cartao, id_cupom, id_usuario) 
 VALUES (CURRENT_TIMESTAMP, 295.00, 45.0, 0.0, 2, 'CANCELADO', 2, 1, null, 2); 
 INSERT INTO itempedido (quantidade, preco, id_pedido, id_teclado) VALUES (1, 250.00, 5, 1);
+INSERT INTO historicopedido (dataHora, statusAnterior, statusNovo, usuarioResponsavel, id_pedido) 
+VALUES (CURRENT_TIMESTAMP, null, 'AGUARDANDO_PAGAMENTO', 'joao', 5);
+INSERT INTO historicopedido (dataHora, statusAnterior, statusNovo, usuarioResponsavel, id_pedido) 
+VALUES (CURRENT_TIMESTAMP, 'AGUARDANDO_PAGAMENTO', 'CANCELADO', 'joao', 5);
 
--- 10. LISTA DE DESEJOS (Many-to-Many)
+-- 10. AVALIAÇÕES (REVIEWS DE PRODUTOS COMPRADOS)
+-- O cliente Joao avalia o teclado HyperX Alloy Origins que comprou no Pedido 4.
+INSERT INTO avaliacao (nota, comentario, dataAvaliacao, id_usuario, id_teclado)
+VALUES (5, 'Teclado fantástico! O RGB é forte.', CURRENT_TIMESTAMP, 2, 2);
+
+-- 11. LISTA DE DESEJOS (Many-to-Many)
 INSERT INTO usuario_lista_desejos (id_usuario, id_teclado) VALUES (2, 2);
 
--- 11. ATUALIZAÇÃO DAS SEQUENCES (Recalculadas para os novos registros)
-ALTER SEQUENCE estado_id_seq RESTART WITH 6;
-ALTER SEQUENCE municipio_id_seq RESTART WITH 6;
-ALTER SEQUENCE marca_id_seq RESTART WITH 4;
-ALTER SEQUENCE categoria_id_seq RESTART WITH 3;
-ALTER SEQUENCE switch_id_seq RESTART WITH 3;
-ALTER SEQUENCE keycap_id_seq RESTART WITH 2;
-ALTER SEQUENCE estoque_id_seq RESTART WITH 4;
-ALTER SEQUENCE produto_id_seq RESTART WITH 4;
-ALTER SEQUENCE usuario_id_seq RESTART WITH 3;
-ALTER SEQUENCE endereco_id_seq RESTART WITH 3;
-ALTER SEQUENCE cartaocredito_id_seq RESTART WITH 2;
-ALTER SEQUENCE cupom_id_seq RESTART WITH 3;
-ALTER SEQUENCE pedido_id_seq RESTART WITH 6;
-ALTER SEQUENCE itempedido_id_seq RESTART WITH 7;
+-- FIM (Tabelas populadas limpas e seguras)
