@@ -16,6 +16,7 @@ public class Teclado extends Produto {
     private String idioma;
     private Boolean comFio;
     private Boolean iluminacaoRgb;
+    private Formato formato;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_estoque", unique = true)
@@ -107,6 +108,14 @@ public class Teclado extends Produto {
 
     public void setCategorias(List<Categoria> categorias) {
         this.categorias = categorias;
+    }
+
+    public Formato getFormato() {
+        return formato;
+    }
+
+    public void setFormato(Formato formato) {
+        this.formato = formato;
     }
 
 }
