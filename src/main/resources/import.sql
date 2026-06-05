@@ -41,18 +41,18 @@ INSERT INTO estoque (quantidade, data_atualizacao, version) VALUES (0, CURRENT_D
 -- 5. PRODUTOS E TECLADOS (Herança JOINED)
 -- Teclado 1: Redragon
 INSERT INTO produto (nome, preco) VALUES ('Redragon Kumara', 250.00);
-INSERT INTO teclado (id, modelo, idioma, comFio, iluminacaoRgb, id_marca, id_switch, id_keycap, id_estoque) 
-VALUES (1, 'K552', 'PT-BR', true, true, 1, 1, 1, 1);
+INSERT INTO teclado (id, modelo, idioma, comFio, iluminacaoRgb, formato, id_marca, id_switch, id_keycap, id_estoque) 
+VALUES (1, 'K552', 'PT-BR', true, true, 2, 1, 1, 1, 1);
 
 -- Teclado 2: HyperX
 INSERT INTO produto (nome, preco) VALUES ('HyperX Alloy Origins', 450.00);
-INSERT INTO teclado (id, modelo, idioma, comFio, iluminacaoRgb, id_marca, id_switch, id_keycap, id_estoque) 
-VALUES (2, 'Alloy Core', 'US', true, true, 2, 2, 1, 2);
+INSERT INTO teclado (id, modelo, idioma, comFio, iluminacaoRgb, formato, id_marca, id_switch, id_keycap, id_estoque) 
+VALUES (2, 'Alloy Core', 'US', true, true, 3, 2, 2, 1, 2);
 
 -- Teclado 3: Logitech (O Esgotado)
 INSERT INTO produto (nome, preco) VALUES ('Logitech G Pro X', 750.00);
-INSERT INTO teclado (id, modelo, idioma, comFio, iluminacaoRgb, id_marca, id_switch, id_keycap, id_estoque) 
-VALUES (3, 'G Pro X', 'US', false, true, 3, 2, 1, 3);
+INSERT INTO teclado (id, modelo, idioma, comFio, iluminacaoRgb, formato, id_marca, id_switch, id_keycap, id_estoque) 
+VALUES (3, 'G Pro X', 'US', false, true, 2, 3, 2, 1, 3);
 
 -- Tabela intermediária de Categorias (Many-to-Many)
 INSERT INTO teclado_categoria (id_teclado, id_categoria) VALUES (1, 1);
@@ -60,11 +60,11 @@ INSERT INTO teclado_categoria (id_teclado, id_categoria) VALUES (2, 1);
 INSERT INTO teclado_categoria (id_teclado, id_categoria) VALUES (3, 2);
 
 -- 6. USUÁRIOS (Senha: 123456 - Utilizando o Hash BCrypt)
-INSERT INTO usuario (nome, login, senha_hash, perfil, email, dataCadastro, version) 
-VALUES ('Administrador', 'admin', '$2a$10$DyM4Suxa8FSzEPiNujfKNuhobl/1tV/aGpPb9yz4sqPSqsmm1Tby2', 'ADMIN', 'admin@email.com', CURRENT_TIMESTAMP, 0);
+INSERT INTO usuario (nome, login, senha_hash, perfil, email, dataCadastro, version, tentativasFalhas, bloqueado, saldoCashback) 
+VALUES ('Administrador', 'admin', '$2a$10$DyM4Suxa8FSzEPiNujfKNuhobl/1tV/aGpPb9yz4sqPSqsmm1Tby2', 'ADMIN', 'admin@email.com', CURRENT_TIMESTAMP, 0, 0, false, 0.0);
 
-INSERT INTO usuario (nome, login, senha_hash, perfil, email, dataCadastro, version) 
-VALUES ('Joao Cliente', 'joao', '$2a$10$DyM4Suxa8FSzEPiNujfKNuhobl/1tV/aGpPb9yz4sqPSqsmm1Tby2', 'USER', 'joao@email.com', CURRENT_TIMESTAMP, 0);
+INSERT INTO usuario (nome, login, senha_hash, perfil, email, dataCadastro, version, tentativasFalhas, bloqueado, saldoCashback) 
+VALUES ('Joao Cliente', 'joao', '$2a$10$DyM4Suxa8FSzEPiNujfKNuhobl/1tV/aGpPb9yz4sqPSqsmm1Tby2', 'USER', 'joao@email.com', CURRENT_TIMESTAMP, 0, 0, false, 0.0);
 
 -- 7. ENDEREÇOS E CARTÕES DO CLIENTE (Vinculados ao Joao - ID 2)
 -- Endereço 1: Tocantins (Frete Grátis)

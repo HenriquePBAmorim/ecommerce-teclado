@@ -14,16 +14,20 @@ Para rodar o projeto sem problemas de conexão, você precisa primeiro subir os 
 ### 1. Subindo a Infraestrutura (Banco e Autenticação)
 Na raiz do projeto (onde está o arquivo `docker-compose.yml`), abra o terminal e rode:
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 O Docker irá baixar e iniciar dois containers:
 1. **PostgreSQL** (porta `5432`) com o banco `topicos1db`.
 2. **Keycloak** (porta `8081`) com o Realm `ecommerce-teclado` importado automaticamente.
 
 ### 2. Rodando a Aplicação Quarkus
-Com a infraestrutura de pé, você pode rodar a aplicação em modo de desenvolvimento:
+Com a infraestrutura de pé, você pode rodar a aplicação em modo de desenvolvimento (recomendamos o uso do Maven Wrapper para evitar problemas de versão do Maven):
 ```bash
-mvn quarkus:dev
+# No Linux/Mac:
+./mvnw compile quarkus:dev
+
+# No Windows (PowerShell/CMD):
+.\mvnw.cmd compile quarkus:dev
 ```
 A API estará disponível em `http://localhost:8080`.
 
