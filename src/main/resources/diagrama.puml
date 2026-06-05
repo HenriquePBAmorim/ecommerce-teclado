@@ -3,12 +3,13 @@ skinparam classAttributeIconSize 0
 skinparam monochrome false
 skinparam shadowing false
 
-' HERANÇA E COMPOSIÇÃO
+
+' =========================================================
+' HERANÇA DE PRODUTO (InheritanceType.JOINED)
+' =========================================================
 abstract class Produto {
-    - id: Long
     - nome: String
     - preco: Double
-    - dataCadastro: LocalDateTime
 }
 
 class Teclado {
@@ -16,87 +17,95 @@ class Teclado {
     - idioma: String
     - comFio: Boolean
     - iluminacaoRgb: Boolean
+    - formato: Formato
 }
 
 class Estoque {
-    - id: Long
+    - version: Long
     - quantidade: Integer
-    - dataAtualizacao: LocalDateTime
+    - dataAtualizacao: LocalDate
 }
 
+' =========================================================
 ' CATÁLOGO BASE
+' =========================================================
 
 class Categoria {
-    - id: Long
     - nome: String
     - descricao: String
 }
 
 class Marca {
-    - id: Long
     - nome: String
     - descricao: String
 }
 
 class Switch {
-    - id: Long
     - nome: String
     - fabricante: String
+    - tipo: TipoSwitch
     - forcaAtuacao: Double
 }
 
 class Keycap {
-    - id: Long
     - nome: String
     - material: String
     - cor: String
+    - perfil: PerfilKeycap
 }
 
+' =========================================================
 ' USUÁRIOS E VENDAS
+' =========================================================
 
 class Usuario {
-    - id: Long
+    - version: Long
     - nome: String
     - login: String
     - senhaHash: String
-    - email: String
-    - cpf: String
     - perfil: Perfil
+    - cpf: String
+    - email: String
     - tentativasFalhas: Integer
     - bloqueado: Boolean
+    - saldoCashback: Double
+    - codigoRecuperacao: String
+    - dataExpiracaoCodigo: LocalDateTime
+    - codigoUsado: Boolean
+}
+
+class Avaliacao {
+    - nota: Integer
+    - comentario: String
+    - dataAvaliacao: LocalDateTime
 }
 
 class Telefone {
-    - id: Long
     - codigoArea: String
     - numero: String
 }
 
 class Endereco {
-    - id: Long
     - logradouro: String
     - numero: String
+    - complemento: String
     - bairro: String
     - cep: String
-    - complemento: String
     - ativo: Boolean
     - principal: Boolean
 }
 
 class Municipio {
-    - id: Long
     - nome: String
 }
 
 class Estado {
-    - id: Long
-    - nome: String
     - sigla: String
-    - regiao: Integer
+    - nome: String
+    - regiao: Regiao
 }
 
 class CartaoCredito {
-    - id: Long
     - numeroCartao: String
     - nomeTitular: String
     - cpfTitular: String
@@ -105,54 +114,112 @@ class CartaoCredito {
 }
 
 class Cupom {
-    - id: Long
     - codigo: String
     - percentualDesconto: Double
     - ativo: Boolean
 }
 
 class Pedido {
-    - id: Long
+    - status: StatusPedido
     - dataHora: LocalDateTime
     - valorTotal: Double
     - valorDesconto: Double
+    - valorFrete: Double
     - formaPagamento: FormaPagamento
 }
 
 class ItemPedido {
     - quantidade: Integer
-    - precoUnitario: Double
+    - preco: Double
 }
 
+class HistoricoPedido {
+    - statusAnterior: StatusPedido
+    - statusNovo: StatusPedido
+    - dataHora: LocalDateTime
+    - usuarioResponsavel: String
+}
+
+' =========================================================
 ' ENUMS
+' =========================================================
 
 enum TipoSwitch {
-    ID: Integer
-    LABEL: String
+    BLUE(1, "Blue (Clicky)")
+    RED(2, "Red (Linear)")
+    BROWN(3, "Brown (Tactile)")
+    --
+    id: Long
+    label: String
 }
 
 enum PerfilKeycap {
-    ID: Integer
-    LABEL: String
+    CHERRY(1, "Cherry")
+    OEM(2, "OEM")
+    SA(3, "SA")
+    XDA(4, "XDA")
+    --
+    id: Long
+    label: String
+}
+
+enum Formato {
+    SESSENTA_POR_CENTO(1, "60%")
+    TKL(2, "Tenkeyless (TKL)")
+    FULL_SIZE(3, "Full Size")
+    --
+    id: Long
+    label: String
 }
 
 enum FormaPagamento {
-    PIX
-    BOLETO
-    CARTAO_CREDITO
+    PIX(1, "Pix")
+    BOLETO(2, "Boleto Bancário")
+    CARTAO_CREDITO(3, "Cartão de Crédito")
+    --
+    id: Long
+    label: String
+}
+
+enum StatusPedido {
+    AGUARDANDO_PAGAMENTO
+    PAGO
+    ENVIADO
+    ENTREGUE
+    CANCELADO
 }
 
 enum Perfil {
-    ADMIN
-    USER
+    ADMIN(1, "Administrador")
+    USER(2, "Usuário")
+    --
+    id: Long
+    label: String
 }
+
+enum Regiao {
+    CENTRO_OESTE(1, "Centro-Oeste")
+    NORDESTE(2, "Nordeste")
+    NORTE(3, "Norte")
+    SUDESTE(4, "Sudeste")
+    SUL(5, "Sul")
+    --
+    id: Long
+    nome: String
+}
+
+' =========================================================
+' RELACIONAMENTOS
+' =========================================================
 
 ' 1. Herança (Seta com ponta vazada)
 Produto <|-- Teclado
 
-' 2. Composição (Diamante preenchido) | Cardinalidade
+' 2. Composição (Diamante preenchido) - CascadeType.ALL + orphanRemoval
 Teclado "1" *-- "1" Estoque : controla >
 Pedido "1" *-- "*" ItemPedido : composto por >
+Pedido "1" *-- "*" HistoricoPedido : possui rastro >
+Usuario "1" *-- "*" Telefone : possui >
 
 ' 3. Agregação (Diamante vazio) | Cardinalidade N:1
 Teclado "*" o-- "1" Switch : usa >
@@ -161,8 +228,7 @@ Teclado "*" o-- "1" Keycap : usa >
 ' 4. Associação Simples | Cardinalidade N:1 e 1:N
 Teclado "*" --> "1" Marca : possui >
 Usuario "1" --> "*" Endereco : possui >
-Usuario "1" --> "*" Telefone : possui >
-Usuario "1" --> "*" CartaoCredito : possui >
+CartaoCredito "*" --> "1" Usuario : pertence a >
 Usuario "1" --> "*" Pedido : realiza >
 Endereco "*" --> "1" Municipio : pertence a >
 Municipio "*" --> "1" Estado : pertence a >
@@ -170,6 +236,8 @@ Pedido "*" --> "1" Endereco : endereco de entrega >
 Pedido "*" --> "0..1" CartaoCredito : pago com >
 Pedido "*" --> "0..1" Cupom : utiliza >
 ItemPedido "*" --> "1" Teclado : refere-se a >
+Avaliacao "*" --> "1" Usuario : avalia >
+Avaliacao "*" --> "1" Teclado : avaliado >
 
 ' 5. Associação Muitos-para-Muitos | Cardinalidade N:N
 Teclado "*" -- "*" Categoria : classificado como >
@@ -179,6 +247,9 @@ Usuario "*" -- "*" Teclado : wishlist >
 Switch "*" --> "1" TipoSwitch : tipo >
 Keycap "*" --> "1" PerfilKeycap : perfil >
 Pedido "*" --> "1" FormaPagamento : forma >
+Pedido "*" --> "1" StatusPedido : status >
 Usuario "*" --> "1" Perfil : perfil >
+Estado "*" --> "1" Regiao : regiao >
+Teclado "*" --> "1" Formato : formato >
 
 @enduml
