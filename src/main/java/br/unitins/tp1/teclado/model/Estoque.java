@@ -3,9 +3,13 @@ package br.unitins.tp1.teclado.model;
 import java.time.LocalDate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Version;
 
 @Entity
 public class Estoque extends DefaultEntity {
+
+    @Version
+    private Long version;
 
     private Integer quantidade;
 

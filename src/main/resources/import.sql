@@ -34,9 +34,9 @@ INSERT INTO switch (nome, fabricante, id_tipo_switch, forcaAtuacao) VALUES ('Che
 INSERT INTO keycap (nome, material, id_perfil, cor) VALUES ('HyperX Pudding', 'PBT', 2, 'Preto');
 
 -- 4. ESTOQUE (INCLUINDO O PRODUTO ESGOTADO PARA TESTE DA VITRINE)
-INSERT INTO estoque (quantidade, data_atualizacao) VALUES (15, CURRENT_TIMESTAMP);
-INSERT INTO estoque (quantidade, data_atualizacao) VALUES (8, CURRENT_TIMESTAMP);
-INSERT INTO estoque (quantidade, data_atualizacao) VALUES (0, CURRENT_TIMESTAMP); -- Estoque zerado
+INSERT INTO estoque (quantidade, data_atualizacao, version) VALUES (15, CURRENT_TIMESTAMP, 0);
+INSERT INTO estoque (quantidade, data_atualizacao, version) VALUES (8, CURRENT_TIMESTAMP, 0);
+INSERT INTO estoque (quantidade, data_atualizacao, version) VALUES (0, CURRENT_TIMESTAMP, 0); -- Estoque zerado
 
 -- 5. PRODUTOS E TECLADOS (Herança JOINED)
 -- Teclado 1: Redragon
@@ -60,11 +60,11 @@ INSERT INTO teclado_categoria (id_teclado, id_categoria) VALUES (2, 1);
 INSERT INTO teclado_categoria (id_teclado, id_categoria) VALUES (3, 2);
 
 -- 6. USUÁRIOS (Senha: 123456 - Utilizando o Hash BCrypt)
-INSERT INTO usuario (nome, login, senha_hash, perfil, email, dataCadastro) 
-VALUES ('Administrador', 'admin', '$2a$10$DyM4Suxa8FSzEPiNujfKNuhobl/1tV/aGpPb9yz4sqPSqsmm1Tby2', 'ADMIN', 'admin@email.com', CURRENT_TIMESTAMP);
+INSERT INTO usuario (nome, login, senha_hash, perfil, email, dataCadastro, version) 
+VALUES ('Administrador', 'admin', '$2a$10$DyM4Suxa8FSzEPiNujfKNuhobl/1tV/aGpPb9yz4sqPSqsmm1Tby2', 'ADMIN', 'admin@email.com', CURRENT_TIMESTAMP, 0);
 
-INSERT INTO usuario (nome, login, senha_hash, perfil, email, dataCadastro) 
-VALUES ('Joao Cliente', 'joao', '$2a$10$DyM4Suxa8FSzEPiNujfKNuhobl/1tV/aGpPb9yz4sqPSqsmm1Tby2', 'USER', 'joao@email.com', CURRENT_TIMESTAMP);
+INSERT INTO usuario (nome, login, senha_hash, perfil, email, dataCadastro, version) 
+VALUES ('Joao Cliente', 'joao', '$2a$10$DyM4Suxa8FSzEPiNujfKNuhobl/1tV/aGpPb9yz4sqPSqsmm1Tby2', 'USER', 'joao@email.com', CURRENT_TIMESTAMP, 0);
 
 -- 7. ENDEREÇOS E CARTÕES DO CLIENTE (Vinculados ao Joao - ID 2)
 -- Endereço 1: Tocantins (Frete Grátis)

@@ -29,7 +29,15 @@ public class UsuarioCartaoServiceImpl implements UsuarioCartaoService {
                 .orElseThrow(() -> new NotFoundException("Usuário não encontrado."));
 
         CartaoCredito cartao = new CartaoCredito();
-        cartao.setNumeroCartao(dto.numeroCartao());
+        
+        String num = dto.numeroCartao();
+        if (num != null && num.length() >= 4) {
+            String ultimos4 = num.substring(num.length() - 4);
+            cartao.setNumeroCartao("XXXX-XXXX-XXXX-" + ultimos4);
+        } else {
+            cartao.setNumeroCartao("XXXX-XXXX-XXXX-0000");
+        }
+        
         cartao.setNomeTitular(dto.nomeTitular());
         cartao.setCpfTitular(dto.cpfTitular());
         cartao.setBandeira(dto.bandeira());
