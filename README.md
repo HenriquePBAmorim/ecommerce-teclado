@@ -1,79 +1,36 @@
-# ecommerce-teclado
+# E-commerce de Teclados (API REST Quarkus)
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Este projeto é uma API REST desenvolvida em **Java/Quarkus**, utilizando **PostgreSQL** para persistência e **Keycloak** para segurança baseada em tokens JWT.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+## Pré-requisitos
+- **Java 21+**
+- **Maven**
+- **Docker** e **Docker Compose**
 
-## Running the application in dev mode
+## Como rodar o projeto localmente
 
-You can run your application in dev mode that enables live coding using:
+Para rodar o projeto sem problemas de conexão, você precisa primeiro subir os containers do Banco de Dados e do Keycloak.
 
-```shell script
-./mvnw quarkus:dev
+### 1. Subindo a Infraestrutura (Banco e Autenticação)
+Na raiz do projeto (onde está o arquivo `docker-compose.yml`), abra o terminal e rode:
+```bash
+docker-compose up -d
 ```
+O Docker irá baixar e iniciar dois containers:
+1. **PostgreSQL** (porta `5432`) com o banco `topicos1db`.
+2. **Keycloak** (porta `8081`) com o Realm `ecommerce-teclado` importado automaticamente.
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
-
-## Packaging and running the application
-
-The application can be packaged using:
-
-```shell script
-./mvnw package
+### 2. Rodando a Aplicação Quarkus
+Com a infraestrutura de pé, você pode rodar a aplicação em modo de desenvolvimento:
+```bash
+mvn quarkus:dev
 ```
+A API estará disponível em `http://localhost:8080`.
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+### 3. Endpoints Úteis
+- **Swagger UI (Documentação da API):** `http://localhost:8080/q/swagger-ui`
+- **Health Checks (Liveness/Readiness):** `http://localhost:8080/q/health`
+- **Painel do Keycloak:** `http://localhost:8081` (Usuário: `admin`, Senha: `admin`)
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/ecommerce-teclado-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- SmallRye OpenAPI ([guide](https://quarkus.io/guides/openapi-swaggerui)): Document your REST APIs with OpenAPI - comes with Swagger UI
-- Hibernate ORM with Panache ([guide](https://quarkus.io/guides/hibernate-orm-panache)): Simplify your persistence code for Hibernate ORM via the active record or the repository pattern
-- RESTEasy Classic ([guide](https://quarkus.io/guides/resteasy)): REST endpoint framework implementing Jakarta REST and more
-- JDBC Driver - PostgreSQL ([guide](https://quarkus.io/guides/datasource)): Connect to the PostgreSQL database via JDBC
-
-## Provided Code
-
-### Hibernate ORM
-
-Create your first JPA entity
-
-[Related guide section...](https://quarkus.io/guides/hibernate-orm)
-
-
-[Related Hibernate with Panache section...](https://quarkus.io/guides/hibernate-orm-panache)
-
-
-### RESTEasy JAX-RS
-
-Easily start your RESTful Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started#the-jax-rs-resources)
+## Observação sobre o Keycloak
+As rotas protegidas da API exigem um token Bearer gerado pelo Keycloak. Como o arquivo `realm-export.json` já é importado ao rodar o `docker-compose`, os usuários de teste (ex: `joao`, `maria123`) já devem estar pré-configurados no Realm `ecommerce-teclado`.
